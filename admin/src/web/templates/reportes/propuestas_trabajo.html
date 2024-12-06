@@ -1,0 +1,22 @@
+{% extends "reportes/reportes.html"%}
+
+{%block info%}
+<h2>Conteo de Propuestas de Trabajo</h2>
+<table class="table table-bordered">
+    <thead>
+<tr>
+    <th>Propuesta de Trabajo</th>
+    <th>Cantidad</th>
+</tr>
+</thead>
+<tbody>
+{% for propuesta, cantidad in count %}
+    <tr>
+        <td>{{ propuesta }}</td>
+        <td>{{ cantidad }}</td>
+    </tr>
+{% endfor %}
+</tbody>
+</table>
+
+{%endblock%}

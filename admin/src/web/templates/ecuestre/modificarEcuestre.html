@@ -1,0 +1,108 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<section class="hero">
+    <h1>Modificar Ecuestre nro: {{ ecuestre.id }}</h1>
+</section>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <form action="{{ url_for('ecuestre.PostModificarEcuestre', id=ecuestre.id) }}" method="POST" class="formulario-modificacion">
+        <div class="form-group">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" class="form-control" value="{{ ecuestre.nombre }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+            <input type="date" id="fechaNacimiento" name="fecha_nacimiento" class="form-control" value="{{ ecuestre.fecha_nacimiento.strftime('%Y-%m-%d') }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="sexo">Sexo:</label>
+            <select id="sexo" name="sexo" class="form-control" required>
+                <option value="M" {% if ecuestre.sexo == 'M' %}selected{% endif %}>Macho</option>
+                <option value="F" {% if ecuestre.sexo == 'F' %}selected{% endif %}>Hembra</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="raza">Raza:</label>
+            <input type="text" id="raza" name="raza" class="form-control" value="{{ ecuestre.raza }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="pelaje">Pelaje:</label>
+            <input type="text" id="pelaje" name="pelaje" class="form-control" value="{{ ecuestre.pelaje }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="comprado">Compra o Donación:</label>
+            <select id="comprado" name="comprado" class="form-control">
+                <option value="True" {% if ecuestre.comprado == True %}selected{% endif %}>Comprado</option>
+                <option value="False" {% if ecuestre.comprado == False %}selected{% endif %}>Donado</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="fechaIngreso">Fecha de Ingreso:</label>
+            <input type="date" id="fechaIngreso" name="fecha_ingreso" class="form-control" value="{{ ecuestre.fecha_ingreso.strftime('%Y-%m-%d') }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="equipos">Selecciona uno o varios, entrenadores o conductores:</label>
+            <div class="checkbox-group">
+                {% for equipo in equipos %}
+                    <div class="form-check">
+                        <input type="checkbox" name="entrenadores_conductores_id" class="form-check-input" value="{{ equipo.id }}" {% if equipo.id in equipos_asociados_ids %}checked{% endif %}>
+                        <label class="form-check-label">{{ equipo.nombre }} {{ equipo.apellido }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="JA">J&A Asignado:</label>
+            <select id="JA" name="tipo_JA" class="form-control">
+                <option value="hipoterapia" {% if ecuestre.tipo_JA == 'hipoterapia' %}selected{% endif %}>Hipoterapia</option>
+                <option value="monta_terapeutica" {% if ecuestre.tipo_JA == 'monta_terapeutica' %}selected{% endif %}>Monta Terapéutica</option>
+                <option value="deporte_ecuestre_adaptado" {% if ecuestre.tipo_JA == 'deporte_ecuestre_adaptado' %}selected{% endif %}>Deporte Ecuestre Adaptado</option>
+                <option value="actividades_recreativas" {% if ecuestre.tipo_JA == 'actividades_recreativas' %}selected{% endif %}>Actividades Recreativas</option>
+                <option value="equitacion" {% if ecuestre.tipo_JA == 'equitacion' %}selected{% endif %}>Equitación</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    </form>
+</div>
+
+<style>
+    .formulario-modificacion {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 8px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .checkbox-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .form-check {
+        margin-bottom: 10px;
+    }
+
+    .btn {
+        display: block;
+        width: 100%;
+    }
+</style>
+{% endblock %}
+

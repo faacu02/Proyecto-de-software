@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1 class="my-4">Editar contacto</h1>
+
+<form method="POST" action="{{ url_for('contacto.editarContacto', id=contacto.id) }}" class="form-inline">
+<label for="estado" class="mr-2">Estado:</label>
+<select name="estado" class="form-control" id="estado">
+    <option value="Pendiente" {% if contacto.estado == 'Pendiente' %}selected{% endif %}>Pendiente</option>
+    <option value="Aceptado" {% if contacto.estado == 'Aceptado' %}selected{% endif %} >Aceptado</option>
+    <option value="Rechazado" {% if contacto.estado == 'Rechazado' %}selected{% endif %} >Rechazado</option>
+    <option value="EnProceso" {% if contacto.estado == 'EnProceso ' %}selected{% endif %} >En Proceso</option>
+</select>
+<label for="comentario" class="mr-2">Comentario:</label>
+<input type="text"  id = "comentario" name="comentario" class="form-control" value="{{ contacto.comentario }}">
+<button type="submit" class="btn btn-primary">Confirmar</button>
+</form>
+
+{% endblock %}

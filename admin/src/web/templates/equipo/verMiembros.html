@@ -1,0 +1,195 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1 class="my-4">Lista de Miembros del Equipo</h1>
+{% if check_permission(session, 'equipo_new') %}
+    <a href="{{ url_for('equipo.altaMiembro')  }}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none"><path d="m12.593 23.258l-.011.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.005l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.43l-.003-.012l-.01-.01z"/><path fill="orange" d="M16 14a5 5 0 0 1 5 5v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1a5 5 0 0 1 5-5zm4-6a1 1 0 0 1 1 1v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 1 1 0-2h1V9a1 1 0 0 1 1-1m-8-6a5 5 0 1 1 0 10a5 5 0 0 1 0-10"/></g></svg>
+    </a>
+{% endif %}
+<div class="search-form mb-4">
+    <form method="GET" action="{{ url_for('equipo.verMiembros', page=miembros.prev_num, email=request.args.get('email', ''), nombre=request.args.get('nombre', ''), apellido=request.args.get('apellido', ''), orden=request.args.get('orden', 'nombre'), direccion=request.args.get('direccion','asc'), dni=request.args.get('dni', ''), puesto=request.args.get('puesto', '') ) }}" class="form-inline">
+        <!-- Campos de búsqueda -->
+        <label for ="nombre" class="mr-2">Ingrese nombre para buscar</label>
+        <input type="text" name="nombre" class="form-control mr-2" id="nombre" style="display: inline;" value="{{ request.args.get('nombre', '') }}">
+        <label for ="apellido" class="mr-2">Ingrese apellido para buscar</label>
+        <input type="text" name="apellido" class="form-control" id="apellido" value="{{ request.args.get('apellido', '') }}">
+        <label for ="dni" class="mr-2">Ingrese DNI para buscar</label>
+        <input type="text" name="dni" class="form-control mr-2" id="dni" value="{{ request.args.get('dni', '') }}">
+        <label for ="email" class="mr-2">Ingrese email para buscar</label>
+        <input type="text" name="email" class="form-control mr-2" id="email" value="{{ request.args.get('email', '') }}">
+        <div id="puesto_select" class="form-group mr-2">
+            <label for="puesto" class="mr-2">Seleccione Puesto Laboral</label>
+            <select name="puesto" class="form-control" id = "puesto">
+                <option value=""></option>
+                <!-- Opciones de profesiones -->
+                <option value="Administrativo/a" {% if request.args.get('puesto') == "Administrativo/a" %}selected{% endif %}>Administrativo/a</option>
+                <option value="Terapeuta" {% if request.args.get('puesto') == "Terapeuta" %}selected{% endif %}>Terapeuta</option>
+                <option value="Conductor" {% if request.args.get('puesto') == "Conductor" %}selected{% endif %}>Conductor</option>
+                <option value="Auxiliar de pista" {% if request.args.get('puesto') == "Auxiliar de pista" %}selected{% endif %}>Auxiliar de pista</option>
+                <option value="Herrero" {% if request.args.get('puesto') == "Herrero" %}selected{% endif %}>Herrero</option>
+                <option value="Veterinario" {% if request.args.get('puesto') == "Veterinario" %}selected{% endif %}>Veterinario</option>
+                <option value="Entrenador de Caballos" {% if request.args.get('puesto') == "Entrenador de caballos" %}selected{% endif %}>Entrenador de Caballos</option>
+                <option value="Domador" {% if request.args.get('puesto') == "Domador" %}selected{% endif %}>Domador</option>
+                <option value="Profesor de Equitación" {% if request.args.get('puesto') == "Profesor de Equitación" %}selected{% endif %}>Profesor de Equitación</option>
+                <option value="Docente de Capacitación"{% if request.args.get('puesto') == "Docente de Capacitación" %}selected{% endif %}>Docente de Capacitación</option>
+                <option value="Auxiliar de mantenimiento" {% if request.args.get('puesto') == "Auxiliar de mantenimiento" %}selected{% endif %}>Auxiliar de mantenimiento</option>
+                <option value="Otro" {% if request.args.get('puesto') == "Otro" %}selected{% endif %}>Otro</option>
+            </select>
+        </div>
+
+        <!-- Nuevos campos para el orden -->
+        <label for="orden" class="mr-2">Ordenar por:</label>
+        <select name="orden" id="orden" class="form-control mr-2">
+            <option value="nombre"{% if request.args.get('orden') == "nombre" %}selected{% endif %} >Nombre</option>
+            <option value="apellido"{% if request.args.get('orden') == "apellido" %}selected{% endif %}>Apellido</option>
+            <option value="fecha_creacion"{% if request.args.get('orden') == "fecha_creacion" %}selected{% endif %}>Fecha de Inicio</option>
+        </select>
+
+        <label for="direccion" class="mr-2">Dirección:</label>
+        <select name="direccion" id="direccion" class="form-control mr-2">
+            <option value="asc" {% if request.args.get('direccion') == "asc" %}selected{% endif %}>Ascendente</option>
+            <option value="desc" {% if request.args.get('direccion') == "desc" %}selected{% endif %}>Descendente</option>
+        </select>
+
+        <button type="submit" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><rect width="48" height="48" fill="none"/><defs><mask id="ipTSearch0"><g fill="none" stroke="#fff" stroke-linejoin="round" stroke-width="4"><path fill="#555" d="M21 38c9.389 0 17-7.611 17-17S30.389 4 21 4S4 11.611 4 21s7.611 17 17 17Z"/><path stroke-linecap="round" d="M26.657 14.343A7.98 7.98 0 0 0 21 12a7.98 7.98 0 0 0-5.657 2.343m17.879 18.879l8.485 8.485"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTSearch0)"/></svg>
+        </button>
+    </form>
+</div>
+
+{% if miembros %}
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>DNI</th>
+                <th>Domicilio</th>
+                <th>Email</th>
+                <th>Localidad</th>
+                <th>Teléfono</th>
+                <th>Profesión</th>
+                <th>Puesto Laboral</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Cese</th>
+                <th>Contacto Emergencia (Nombre)</th>
+                <th>Contacto Emergencia (Teléfono)</th>
+                <th>Obra Social</th>
+                <th>Número de Afiliado</th>
+                <th>Condición</th>
+                <th>Activo</th>
+                <th>Título</th>
+                <th>Copia DNI</th>
+                <th>CV Actualizado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for miembro in miembros %}
+            <tr>
+                <td>{{ miembro.nombre }}</td>
+                <td>{{ miembro.apellido }}</td>
+                <td>{{ miembro.dni }}</td>
+                <td>{{ miembro.domicilio }}</td>
+                <td>{{ miembro.email }}</td>
+                <td>{{ miembro.localidad }}</td>
+                <td>{{ miembro.telefono }}</td>
+                <td>{{ miembro.profesion }}</td>
+                <td>{{ miembro.puesto_laboral }}</td>
+                <td>{{ miembro.fecha_inicio.strftime('%Y-%m-%d') }}</td>
+                <td>{{ miembro.fecha_cese.strftime('%Y-%m-%d') }}</td>
+                <td>{{ miembro.contacto_emergencia_nombre }}</td>
+                <td>{{ miembro.contacto_emergencia_telefono }}</td>
+                <td>{{ miembro.obra_social }}</td>
+                <td>{{ miembro.num_afiliado }}</td>
+                <td>{{ miembro.condicion }}</td>
+                <td>{{ 'Sí' if miembro.activo else 'No' }}</td>
+                {% if check_permission(session, 'equipo_show') %}
+                    <td>
+                        {% if miembro.titulo %}
+                            <a href="{{ url_for('equipo.download_file', filename=urllib.parse.quote(miembro.titulo)) }}" class="btn btn-primary btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="64" stroke-dashoffset="64" d="M13.5 3l5.5 5.5v11.5c0 0.55 -0.45 1 -1 1h-12c-0.55 0 -1 -0.45 -1 -1v-16c0 -0.55 0.45 -1 1 -1Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="64;0"/></path><path d="M14.5 3.5l2.25 2.25l2.25 2.25z" opacity="0"><animate fill="freeze" attributeName="d" begin="0.6s" dur="0.2s" values="M14.5 3.5l2.25 2.25l2.25 2.25z;M14.5 3.5l0 4.5l4.5 0z"/><set fill="freeze" attributeName="opacity" begin="0.6s" to="1"/></path></g></svg>
+                            </a>
+                        {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><mask id="lineMdFileOff0"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="64" stroke-dashoffset="64" d="M13.5 3l5.5 5.5v11.5c0 0.55 -0.45 1 -1 1h-12c-0.55 0 -1 -0.45 -1 -1v-16c0 -0.55 0.45 -1 1 -1Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="64;0"/></path><path d="M14.5 3.5l2.25 2.25l2.25 2.25z" opacity="0"><animate fill="freeze" attributeName="d" begin="0.6s" dur="0.2s" values="M14.5 3.5l2.25 2.25l2.25 2.25z;M14.5 3.5l0 4.5l4.5 0z"/><set fill="freeze" attributeName="opacity" begin="0.6s" to="1"/></path><path stroke="#000" stroke-dasharray="28" stroke-dashoffset="28" d="M-1 11h26" transform="rotate(45 12 12)"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.4s" values="28;0"/></path><path stroke-dasharray="28" stroke-dashoffset="28" d="M-1 13h26" transform="rotate(45 12 12)"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.4s" values="28;0"/></path></g></mask><rect width="24" height="24" fill="currentColor" mask="url(#lineMdFileOff0)"/></svg>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if miembro.copia_dni %}
+                            <a href="{{ url_for('equipo.download_file', filename=urllib.parse.quote(miembro.copia_dni)) }}" class="btn btn-primary btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="64" stroke-dashoffset="64" d="M13.5 3l5.5 5.5v11.5c0 0.55 -0.45 1 -1 1h-12c-0.55 0 -1 -0.45 -1 -1v-16c0 -0.55 0.45 -1 1 -1Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="64;0"/></path><path d="M14.5 3.5l2.25 2.25l2.25 2.25z" opacity="0"><animate fill="freeze" attributeName="d" begin="0.6s" dur="0.2s" values="M14.5 3.5l2.25 2.25l2.25 2.25z;M14.5 3.5l0 4.5l4.5 0z"/><set fill="freeze" attributeName="opacity" begin="0.6s" to="1"/></path></g></svg>
+                            </a>
+                        {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><mask id="lineMdFileOff0"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="64" stroke-dashoffset="64" d="M13.5 3l5.5 5.5v11.5c0 0.55 -0.45 1 -1 1h-12c-0.55 0 -1 -0.45 -1 -1v-16c0 -0.55 0.45 -1 1 -1Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="64;0"/></path><path d="M14.5 3.5l2.25 2.25l2.25 2.25z" opacity="0"><animate fill="freeze" attributeName="d" begin="0.6s" dur="0.2s" values="M14.5 3.5l2.25 2.25l2.25 2.25z;M14.5 3.5l0 4.5l4.5 0z"/><set fill="freeze" attributeName="opacity" begin="0.6s" to="1"/></path><path stroke="#000" stroke-dasharray="28" stroke-dashoffset="28" d="M-1 11h26" transform="rotate(45 12 12)"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.4s" values="28;0"/></path><path stroke-dasharray="28" stroke-dashoffset="28" d="M-1 13h26" transform="rotate(45 12 12)"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.4s" values="28;0"/></path></g></mask><rect width="24" height="24" fill="currentColor" mask="url(#lineMdFileOff0)"/></svg>
+                        {% endif %}
+                    <td>
+                        {% if miembro.cv_actualizado %}
+                            <a href="{{ url_for('equipo.download_file', filename=urllib.parse.quote(miembro.cv_actualizado)) }}" class="btn btn-primary btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="64" stroke-dashoffset="64" d="M13.5 3l5.5 5.5v11.5c0 0.55 -0.45 1 -1 1h-12c-0.55 0 -1 -0.45 -1 -1v-16c0 -0.55 0.45 -1 1 -1Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="64;0"/></path><path d="M14.5 3.5l2.25 2.25l2.25 2.25z" opacity="0"><animate fill="freeze" attributeName="d" begin="0.6s" dur="0.2s" values="M14.5 3.5l2.25 2.25l2.25 2.25z;M14.5 3.5l0 4.5l4.5 0z"/><set fill="freeze" attributeName="opacity" begin="0.6s" to="1"/></path></g></svg>
+                            </a>
+                        {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><mask id="lineMdFileOff0"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="64" stroke-dashoffset="64" d="M13.5 3l5.5 5.5v11.5c0 0.55 -0.45 1 -1 1h-12c-0.55 0 -1 -0.45 -1 -1v-16c0 -0.55 0.45 -1 1 -1Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.6s" values="64;0"/></path><path d="M14.5 3.5l2.25 2.25l2.25 2.25z" opacity="0"><animate fill="freeze" attributeName="d" begin="0.6s" dur="0.2s" values="M14.5 3.5l2.25 2.25l2.25 2.25z;M14.5 3.5l0 4.5l4.5 0z"/><set fill="freeze" attributeName="opacity" begin="0.6s" to="1"/></path><path stroke="#000" stroke-dasharray="28" stroke-dashoffset="28" d="M-1 11h26" transform="rotate(45 12 12)"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.4s" values="28;0"/></path><path stroke-dasharray="28" stroke-dashoffset="28" d="M-1 13h26" transform="rotate(45 12 12)"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.8s" dur="0.4s" values="28;0"/></path></g></mask><rect width="24" height="24" fill="currentColor" mask="url(#lineMdFileOff0)"/></svg>
+                        {% endif %}
+                    </td>
+                {% endif %}
+                    <td>
+                    {% if check_permission(session, 'equipo_update') %}
+                        <a href="{{ url_for('equipo.editarMiembro', id=miembro.id) }}" class="btn btn-primary btn-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="#6EB4D3" fill-rule="evenodd" d="M5 8a4 4 0 1 1 7.796 1.263l-2.533 2.534A4 4 0 0 1 5 8m4.06 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h2.172a3 3 0 0 1-.114-1.588l.674-3.372a3 3 0 0 1 .82-1.533zm9.032-5a2.9 2.9 0 0 0-2.056.852L9.967 14.92a1 1 0 0 0-.273.51l-.675 3.373a1 1 0 0 0 1.177 1.177l3.372-.675a1 1 0 0 0 .511-.273l6.07-6.07a2.91 2.91 0 0 0-.944-4.742A2.9 2.9 0 0 0 18.092 8" clip-rule="evenodd"/></svg>
+                        </a>
+                    {% endif %}
+                    {% if check_permission(session, 'equipo_destroy') %}
+                        {% if (miembro.usuario and not miembro.usuario.role.name == 'SystemAdmin') or not miembro.usuario %}
+                            <form action="{{ url_for('equipo.borrarMiembro', id=miembro.id) }}" method="POST" style="display:inline;" onsubmit="return confirmDelete('{{ miembro.nombre }}', '{{ miembro.apellido }}')">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><path d="m12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036q-.016-.004-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z"/><path fill="red" d="M7.823 3.368A2 2 0 0 1 9.721 2h4.558a2 2 0 0 1 1.898 1.368L16.72 5H20a1 1 0 1 1 0 2h-1v12a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V7H4a1 1 0 0 1 0-2h3.28zM9.387 5l.334-1h4.558l.334 1z"/></g></svg>
+                                </button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
+</div>
+{% else %}
+<p class="no-miembros">No hay miembros registrados</p>
+{% endif %}
+<div class="pagination-wrapper">
+    {%if check_permission(session, 'equipo_index')%}
+        {% if miembros.has_prev %}
+            <a href="{{ url_for('equipo.verMiembros', page=miembros.prev_num, email=request.args.get('email', ''), nombre=request.args.get('nombre', ''), apellido=request.args.get('apellido', ''), orden=request.args.get('orden', 'nombre'), direccion=request.args.get('direccion','asc'), dni=request.args.get('dni', ''), puesto=request.args.get('puesto', '') ) }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20"><path fill="black" d="m2 10l8 8l1.4-1.4L5.8 11H18V9H5.8l5.6-5.6L10 2z"/></svg></a>
+        {% endif %}
+        {% if miembros.has_next %}
+            <a href="{{ url_for('equipo.verMiembros', page=miembros.next_num, email=request.args.get('email', ''), nombre=request.args.get('nombre', ''), apellido=request.args.get('apellido', ''), orden=request.args.get('orden', 'nombre'), direccion=request.args.get('direccion','asc'), dni=request.args.get('dni', ''), puesto=request.args.get('puesto', '') ) }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20"><path fill="black" d="M8.6 3.4L14.2 9H2v2h12.2l-5.6 5.6L10 18l8-8l-8-8z"/></svg></a>
+        {% endif %}
+    {% endif %}
+</div>
+
+<script>
+function toggleProfesion() {
+    var busqueda = document.getElementById('busqueda').value;
+    var profesionSelect = document.getElementById('profesion_select');
+    var valorBusqueda = document.getElementById('valor_busqueda');
+    
+    if (busqueda === 'profesion') {
+        profesionSelect.style.display = 'block';
+        valorBusqueda.style.display = 'none';
+    } else {
+        profesionSelect.style.display = 'none';
+        valorBusqueda.style.display = 'inline';
+    }
+}
+
+function confirmDelete(nombre, apellido) {
+    return confirm(`¿Está seguro que desea borrar al miembro ${nombre} ${apellido}?`);
+}
+</script>
+
+{% endblock %}

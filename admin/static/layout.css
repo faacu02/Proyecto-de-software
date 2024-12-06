@@ -1,0 +1,166 @@
+body,
+html {
+    background-color: #E3E4DC;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.red {
+    background-color: #ff5f56;
+}
+
+.yellow {
+    background-color: #ffbd2e;
+}
+
+.green {
+    background-color: #27c93f;
+}
+
+
+.app-header {
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+    margin-top: -60px; /* Ajusta este valor según tus necesidades */
+}
+
+.logo {
+    width: 100%;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 10px;
+}
+
+img {
+    max-width: 40%;
+    max-height: 40%;
+}
+
+
+.navbar-brand {
+    padding: 0; /* Quitar padding extra */
+    max-width: 50%;
+}
+
+.nav-item {
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.nav-item:hover {
+    cursor: pointer;
+}
+
+.user-profile {
+    position: relative;
+}
+
+.user-profile img {
+    width: 220px; /* Ajusta el tamaño según tus necesidades */
+    height: 220px; /* Ajusta el tamaño según tus necesidades */
+    border-radius: 100%; /* Hace que la imagen sea circular */
+    object-fit: contain; /* Asegura que la imagen se ajuste bien dentro del contenedor sin recortarse */
+}
+
+.profile-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px 0;
+    min-width: 120px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.profile-dropdown.show {
+    display: block;
+}
+.dropdown-item {
+    padding: 8px 15px;
+    cursor: pointer;
+}
+.dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+.profile-button {
+    background-color: #e6f3ff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.profile-button:hover {
+    background-color: #d0e8ff;
+}
+.main-content {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.sidebar {
+    width: 200px;
+    background-color: #f9f9f9;
+    border-right: 1px solid #ccc;
+    overflow-y: auto;
+}
+
+.content-area {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+@media (max-width: 768px) {
+    .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-menu {
+        margin-top: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .user-profile {
+        margin-top: 10px;
+        align-self: flex-end;
+    }
+
+    .main-content {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #ccc;
+        max-height: 200px;
+    }
+}
+
+@media (max-width: 480px) {
+    .browser-buttons {
+        display: none;
+    }
+
+    .nav-menu {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .nav-item {
+        text-align: center;
+    }
+}

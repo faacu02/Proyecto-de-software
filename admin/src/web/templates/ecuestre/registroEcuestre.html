@@ -1,0 +1,291 @@
+{% extends "layout.html" %}
+
+{% block title %}
+<section class="hero">
+    <h1>Registrar Nuevo Ecuestre</h1>
+</section>
+{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-start mb-4">
+    <a href="{{ url_for('ecuestre.ecuestre_page') }}" class="btn btn-primary">Volver a Ecuestres</a>
+</div>
+
+<div class="container">
+    <form action="{{ url_for('ecuestre.ecuestre_register') }}" method="POST" enctype="multipart/form-data">
+        <div class="row mb-3">
+            <label for="nombre" class="col-sm-2 col-form-label">Nombre</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="nombre" name="nombre" value="{{ request.form.nombre }}" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="fechaNacimiento" class="col-sm-2 col-form-label">Fecha de nacimiento</label>
+            <div class="col-sm-10">
+                <input type="date" class="form-control" id="fechaNacimiento" name="fecha_nacimiento" value="{{ request.form.fecha_nacimiento }}" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="sexo" class="col-sm-2 col-form-label">Sexo</label>
+            <div class="col-sm-10">
+                <select class="form-select" id="sexo" name="sexo">
+                    <option value="F">Hembra</option>
+                    <option value="M">Macho</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="raza" class="col-sm-2 col-form-label">Raza</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="raza" name="raza" value="{{ request.form.raza }}" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="pelaje" class="col-sm-2 col-form-label">Pelaje</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="pelaje" name="pelaje" value="{{ request.form.pelaje }}" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="compra_donacion" class="col-sm-2 col-form-label">Compra o Donación</label>
+            <div class="col-sm-10">
+                <select class="form-select" id="compra_donacion" name="comprado">
+                    <option value="True">Comprado</option>
+                    <option value="False">Donado</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="fechaIngreso" class="col-sm-2 col-form-label">Fecha de Ingreso</label>
+            <div class="col-sm-10">
+                <input type="date" class="form-control" id="fechaIngreso" name="fecha_ingreso" value="{{ request.form.fecha_ingreso }}" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="equipos" class="col-sm-2 col-form-label">Selecciona uno o varios, entrenadores o conductores</label>
+            <div class="col-sm-10">
+                <div class="checkbox-group">
+                    {% for equipo in equipos %}
+                        <div class="form-check">
+                            <input type="checkbox" name="entrenadores_conductores_id" class="form-check-input" value="{{ equipo.id }}"
+                            <label class="form-check-label">{{ equipo.nombre }} {{ equipo.apellido }}</label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <label for="JA" class="col-sm-2 col-form-label">J&A Asignado</label>
+            <div class="col-sm-10">
+                <select class="form-select" id="JA" name="tipo_JA">
+                    <option value="hipoterapia">Hipoterapia</option>
+                    <option value="monta_terapeutica">Monta Terapéutica</option>
+                    <option value="deporte_ecuestre_adaptado">Deporte Ecuestre Adaptado</option>
+                    <option value="actividades_recreativas">Actividades Recreativas</option>
+                    <option value="equitacion">Equitación</option>
+                </select>
+            </div>
+        </div>
+
+<!-- Sección de archivos -->
+<!--
+<div class="row mb-3">
+    <label for="ficha_general" class="col-sm-2 col-form-label">Ficha General</label>
+    <div class="col-sm-10">
+        <div class="mb-3">
+            <label for="tipo_subida_ficha_general" class="form-label">Subir Archivo o Enlace</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="tipo_subida_ficha_general" id="opcion_archivo_ficha_general" value="archivo" checked>
+                <label class="form-check-label" for="opcion_archivo_ficha_general">Subir archivo</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="tipo_subida_ficha_general" id="opcion_link_ficha_general" value="link">
+                <label class="form-check-label" for="opcion_link_ficha_general">Ingresar enlace</label>
+            </div>
+        </div>
+        <div class="form-group" id="input_archivo_ficha_general">
+            <label for="ficha_general">Seleccionar archivo</label>
+            <input type="file" class="form-control" id="ficha_general" name="ficha_general" onchange="mostrarBotonEliminar('ficha_general')">
+            <button type="button" id="eliminar_ficha_general" class="btn btn-danger mt-2" onclick="eliminarArchivo('ficha_general')" style="display: none;">Eliminar archivo</button>
+            <p id="nombre_archivo_seleccionado_ficha_general"></p>
+        </div>
+        <div class="mb-3 d-none" id="input_link_ficha_general">
+            <label for="enlace_ficha_general" class="form-label">Ingresar enlace</label>
+            <input class="form-control" type="url" id="enlace_ficha_general" name="enlace_ficha_general" placeholder="https://example.com">
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <label for="planificacion_entrenamiento" class="col-sm-2 col-form-label">Planificación de Entrenamiento</label>
+    <div class="col-sm-10">
+        <div class="mb-3">
+            <label for="tipo_subida_planificacion_entrenamiento" class="form-label">Subir Archivo o Enlace</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="tipo_subida_planificacion_entrenamiento" id="opcion_archivo_planificacion_entrenamiento" value="archivo" checked>
+                <label class="form-check-label" for="opcion_archivo_planificacion_entrenamiento">Subir archivo</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="tipo_subida_planificacion_entrenamiento" id="opcion_link_planificacion_entrenamiento" value="link">
+                <label class="form-check-label" for="opcion_link_planificacion_entrenamiento">Ingresar enlace</label>
+            </div>
+        </div>
+        <div class="form-group" id="input_archivo_planificacion_entrenamiento">
+            <label for="planificacion_entrenamiento">Seleccionar archivo</label>
+            <input type="file" class="form-control" id="planificacion_entrenamiento" name="planificacion_entrenamiento" onchange="mostrarBotonEliminar('planificacion_entrenamiento')" >
+            <button type="button" id="eliminar_planificacion_entrenamiento" class="btn btn-danger mt-2" onclick="eliminarArchivo('planificacion_entrenamiento')" style="display: none;">Eliminar archivo</button>
+            <p id="nombre_archivo_seleccionado_planificacion_entrenamiento"></p>
+        </div>
+        <div class="mb-3 d-none" id="input_link_planificacion_entrenamiento">
+            <label for="enlace_planificacion_entrenamiento" class="form-label">Ingresar enlace</label>
+            <input class="form-control" type="url" id="enlace_planificacion_entrenamiento" name="enlace_planificacion_entrenamiento" placeholder="https://example.com">
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <label for="informe_evolucion" class="col-sm-2 col-form-label">Informe de Evolución</label>
+    <div class="col-sm-10">
+        <div class="mb-3">
+            <label for="tipo_subida_informe_evolucion" class="form-label">Subir Archivo o Enlace</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="tipo_subida_informe_evolucion" id="opcion_archivo_informe_evolucion" value="archivo" checked>
+                <label class="form-check-label" for="opcion_archivo_informe_evolucion">Subir archivo</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="tipo_subida_informe_evolucion" id="opcion_link_informe_evolucion" value="link">
+                <label class="form-check-label" for="opcion_link_informe_evolucion">Ingresar enlace</label>
+            </div>
+        </div>
+        <div class="form-group" id="input_archivo_informe_evolucion">
+            <label for="informe_evolucion">Seleccionar archivo</label>
+            <input type="file" class="form-control" id="informe_evolucion" name="informe_evolucion" onchange="mostrarBotonEliminar('informe_evolucion')">
+            <button type="button" id="eliminar_informe_evolucion" class="btn btn-danger mt-2" onclick="eliminarArchivo('informe_evolucion')" style="display: none;">Eliminar archivo</button>
+            <p id="nombre_archivo_seleccionado_informe_evolucion"></p>
+        </div>
+        <div class="mb-3 d-none" id="input_link_informe_evolucion">
+            <label for="enlace_informe_evolucion" class="form-label">Ingresar enlace</label>
+            <input class="form-control" type="url" id="enlace_informe_evolucion" name="enlace_informe_evolucion" placeholder="https://example.com">
+        </div>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <label for="carga_imagenes" class="col-sm-2 col-form-label">Carga de Imágenes</label>
+    <div class="col-sm-10">
+        <div class="mb-3">
+            <label for="tipo_subida_carga_imagenes" class="form-label">Subir Archivo o Enlace</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="tipo_subida_carga_imagenes" id="opcion_archivo_carga_imagenes" value="archivo" checked>
+                <label class="form-check-label" for="opcion_archivo_carga_imagenes">Subir archivo</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="tipo_subida_carga_imagenes" id="opcion_link_carga_imagenes" value="link">
+                <label class="form-check-label" for="opcion_link_carga_imagenes">Ingresar enlace</label>
+            </div>
+        </div>
+        <div class="form-group" id="input_archivo_carga_imagenes">
+            <label for="carga_imagenes">Seleccionar archivo</label>
+            <input type="file" class="form-control" id="carga_imagenes" name="carga_imagenes" onchange="mostrarBotonEliminar('carga_imagenes')">
+            <button type="button" id="eliminar_carga_imagenes" class="btn btn-danger mt-2" onclick="eliminarArchivo('carga_imagenes')" style="display: none;">Eliminar archivo</button>
+            <p id="nombre_archivo_seleccionado_carga_imagenes"></p>
+        </div>
+        <div class="mb-3 d-none" id="input_link_carga_imagenes">
+            <label for="enlace_carga_imagenes" class="form-label">Ingresar enlace</label>
+            <input class="form-control" type="url" id="enlace_carga_imagenes" name="enlace_carga_imagenes" placeholder="https://example.com">
+        </div>
+    </div>
+</div>
+<div class="row mb-3">
+    <label for="registro_veterinario" class="col-sm-2 col-form-label">Registro Veterinario</label>
+    <div class="col-sm-10">
+        <div class="mb-3">
+            <label for="tipo_subida_registro_veterinario" class="form-label">Subir Archivo o Enlace</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="tipo_subida_registro_veterinario" id="opcion_archivo_registro_veterinario" value="archivo" checked>
+                <label class="form-check-label" for="opcion_archivo_registro_veterinario">Subir archivo</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="tipo_subida_registro_veterinario" id="opcion_link_registro_veterinario" value="link">
+                <label class="form-check-label" for="opcion_link_registro_veterinario">Ingresar enlace</label>
+            </div>
+        </div>
+        <div class="form-group" id="input_archivo_registro_veterinario">
+            <label for="registro_veterinario">Seleccionar archivo</label>
+            <input type="file" class="form-control" id="registro_veterinario" name="registro_veterinario" onchange="mostrarBotonEliminar('registro_veterinario')">
+            <button type="button" id="eliminar_registro_veterinario" class="btn btn-danger mt-2" onclick="eliminarArchivo('registro_veterinario')" style="display: none;">Eliminar archivo</button>
+            <p id="nombre_archivo_seleccionado_registro_veterinario"></p>
+        </div>
+        <div class="mb-3 d-none" id="input_link_registro_veterinario">
+            <label for="enlace_registro_veterinario" class="form-label">Ingresar enlace</label>
+            <input class="form-control" type="url" id="enlace_registro_veterinario" name="enlace_registro_veterinario" placeholder="https://example.com">
+        </div>
+    </div>
+</div>
+-->
+        <button type="submit" class="btn btn-primary">Registrar Ecuestre</button>
+    </form>
+</div>
+
+<!-- Integración de Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script>
+const cambiarVisibilidadArchivoLink = (opcionArchivoId, opcionLinkId, inputArchivoId, inputLinkId) => {
+    const opcionArchivo = document.getElementById(opcionArchivoId);
+    const opcionLink = document.getElementById(opcionLinkId);
+    const inputArchivo = document.getElementById(inputArchivoId);
+    const inputLink = document.getElementById(inputLinkId);
+    
+    opcionArchivo.addEventListener('change', function() {
+        if (this.checked) {
+            inputArchivo.classList.remove('d-none');
+            inputLink.classList.add('d-none');
+        }
+    });
+
+    opcionLink.addEventListener('change', function() {
+        if (this.checked) {
+            inputLink.classList.remove('d-none');
+            inputArchivo.classList.add('d-none');
+        }
+    });
+};
+cambiarVisibilidadArchivoLink('opcion_archivo_ficha_general', 'opcion_link_ficha_general', 'input_archivo_ficha_general', 'input_link_ficha_general');
+cambiarVisibilidadArchivoLink('opcion_archivo_planificacion_entrenamiento', 'opcion_link_planificacion_entrenamiento', 'input_archivo_planificacion_entrenamiento', 'input_link_planificacion_entrenamiento');
+cambiarVisibilidadArchivoLink('opcion_archivo_planificacion_entrenamiento', 'opcion_link_planificacion_entrenamiento', 'input_archivo_planificacion_entrenamiento', 'input_link_planificacion_entrenamiento');
+cambiarVisibilidadArchivoLink('opcion_archivo_informe_evolucion', 'opcion_link_informe_evolucion', 'input_archivo_informe_evolucion', 'input_link_informe_evolucion');
+cambiarVisibilidadArchivoLink('opcion_archivo_carga_imagenes', 'opcion_link_carga_imagenes', 'input_archivo_carga_imagenes', 'input_link_carga_imagenes');
+cambiarVisibilidadArchivoLink('opcion_archivo_registro_veterinario', 'opcion_link_registro_veterinario', 'input_archivo_registro_veterinario', 'input_link_registro_veterinario');
+function mostrarBotonEliminar(elemento) {
+    var input = document.getElementById(elemento);
+    var botonEliminar = document.getElementById('eliminar_' + elemento);
+    if (input.files.length > 0) {
+        botonEliminar.style.display = 'inline'; // Muestra el botón de eliminar
+        document.getElementById('nombre_archivo_seleccionado_' + elemento).textContent = 'Archivo seleccionado: ' + input.files[0].name;
+     
+       }   else {
+        botonEliminar.style.display = 'none'; // Oculta el botón de eliminar
+        document.getElementById('nombre_archivo_seleccionado_' + elemento).textContent = '';
+    }
+}
+
+
+function eliminarArchivo(elemento) {
+    var input = document.getElementById(elemento);
+    input.value = ""; // Limpia el campo de archivo
+    document.getElementById('eliminar_' + elemento).style.display = 'none'; // Oculta el botón de eliminar
+    document.getElementById('nombre_archivo_seleccionado_' + elemento).textContent = ''; // Limpia el nombre mostrado
+}
+</script>
+{% endblock %}
+

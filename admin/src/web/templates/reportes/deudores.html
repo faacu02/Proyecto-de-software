@@ -1,0 +1,29 @@
+{% extends "reportes/reportes.html"%}
+
+{%block info%}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Reporte de Deudores</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-striped table-hover">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Apellido</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for deudor in deudores %}
+                    <tr>
+                        <td>{{ deudor.nombre }}</td>
+                        <td>{{ deudor.apellido }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2" class="text-center">No se encontraron deudores.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "web"
+version = "0.1.0"
+description = ""
+authors = ["Facundo Feliu <feliufacundo0@gmail.com>"]
+readme = "README.md"
+packages = [{include = "web", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+flask = "^3.0.3"
+psycopg2-binary = "^2.9.9"
+flask-sqlalchemy = "^3.1.1"
+flask-session = "^0.8.0"
+flask-bcrypt = "^1.0.1"
+minio = "^7.2.9"
+black = "^24.10.0"
+marshmallow = "^3.23.1"
+matplotlib = "^3.9.2"
+flask-cors = "^5.0.0"
+requests = "^2.32.3"
+Authlib = "^1.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.2"
+black = "^24.10.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

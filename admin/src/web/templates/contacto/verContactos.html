@@ -1,0 +1,103 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h1 class="my-4">Lista de contactos</h1>
+
+<form method="GET" action="{{ url_for('contacto.verContactos', page=contactos.prev_num, estado = request.args.get('estado', ''), direccion= request.args.get('direccion', 'desc')) }}" class="form-inline">
+
+    <div id="estado_select" class="form-group mr-2">
+        <label for="estado" class="mr-2">Seleccione estado para filtrar</label>
+        <select name="estado" class="form-control" id = "estado">
+            <option value="">Todos</option>
+            <option value="Pendiente" {% if request.args.get('estado') == "Pendiente" %}selected{% endif %} >Pendiente </option>
+            <option value="Aceptado" {% if request.args.get('estado') == "Aceptado" %}selected{% endif %} >Aceptado</option>
+            <option value="Rechazado" {% if request.args.get('estado') == "Rechazado" %}selected{% endif %}>Rechazado</option>
+            <option value="EnProceso"{% if request.args.get('estado') == "EnProceso" %}selected{% endif %} >En Proceso</option>
+        </select>
+    </div>
+
+    <label for="direccion" class="mr-2">Orden por fecha de creación:</label>
+        <select name="direccion" id="direccion" class="form-control mr-2">
+            <option value="asc" {% if request.args.get('direccion') == "asc" %}selected{% endif %} >Ascendente</option>
+            <option value="desc" {% if request.args.get('direccion', 'desc') == "desc" %}selected{% endif %} >Descendente</option>
+        </select>
+
+        <button type="submit" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><rect width="48" height="48" fill="none"/><defs><mask id="ipTSearch0"><g fill="none" stroke="#fff" stroke-linejoin="round" stroke-width="4"><path fill="#555" d="M21 38c9.389 0 17-7.611 17-17S30.389 4 21 4S4 11.611 4 21s7.611 17 17 17Z"/><path stroke-linecap="round" d="M26.657 14.343A7.98 7.98 0 0 0 21 12a7.98 7.98 0 0 0-5.657 2.343m17.879 18.879l8.485 8.485"/></g></mask></defs><path fill="currentColor" d="M0 0h48v48H0z" mask="url(#ipTSearch0)"/></svg>
+        </button>
+</form>
+
+
+{% if contactos %}
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Email</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Comentario</th>
+                <th>Mensaje</th>
+                <th>Editar</th>
+                <th>Borrar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contacto in contactos %}
+            <tr>
+                <td>{{ contacto.email }}</td>
+                <td>{{ contacto.fecha_creacion.strftime('%Y-%m-%d') }}</td>
+                <td>{{ contacto.estado }}</td>
+                <td>{{ contacto.comentario }}</td>
+                {% if check_permission(session, 'contacto_show') %}
+                    <td>
+                        <a href="{{ url_for('contacto.verMensaje', id=contacto.id) }}" class="btn btn-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="blue" d="M11.953 2.25c-2.317 0-4.118 0-5.52.15c-1.418.153-2.541.47-3.437 1.186c-.92.736-1.35 1.693-1.553 2.9c-.193 1.152-.193 2.618-.193 4.446v.183c0 1.782 0 3.015.2 3.934c.108.495.278.925.545 1.323c.264.392.6.722 1.001 1.042c.631.505 1.375.81 2.254 1V21a.75.75 0 0 0 1.123.65c.586-.335 1.105-.7 1.58-1.044l.304-.221a22 22 0 0 1 1.036-.73c.844-.548 1.65-.905 2.707-.905h.047c2.317 0 4.118 0 5.52-.15c1.418-.153 2.541-.47 3.437-1.186c.4-.32.737-.65 1-1.042c.268-.398.438-.828.546-1.323c.2-.919.2-2.152.2-3.934v-.183c0-1.828 0-3.294-.193-4.445c-.203-1.208-.633-2.165-1.553-2.901c-.896-.717-2.019-1.033-3.437-1.185c-1.402-.151-3.203-.151-5.52-.151z"/></svg>
+                        </a>
+                    </td>
+                {% endif %}
+                {% if check_permission(session, 'contacto_update') %}
+                    <td>
+                        <a href="{{ url_for('contacto.editarContacto', id=contacto.id) }}" class="btn btn-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="#6EB4D3" fill-rule="evenodd" d="M5 8a4 4 0 1 1 7.796 1.263l-2.533 2.534A4 4 0 0 1 5 8m4.06 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h2.172a3 3 0 0 1-.114-1.588l.674-3.372a3 3 0 0 1 .82-1.533zm9.032-5a2.9 2.9 0 0 0-2.056.852L9.967 14.92a1 1 0 0 0-.273.51l-.675 3.373a1 1 0 0 0 1.177 1.177l3.372-.675a1 1 0 0 0 .511-.273l6.07-6.07a2.91 2.91 0 0 0-.944-4.742A2.9 2.9 0 0 0 18.092 8" clip-rule="evenodd"/></svg>
+                        </a>
+                    </td>
+                {% endif %}
+                {% if check_permission(session, 'contacto_destroy') %}
+                    <td>
+                        <form action="{{ url_for('contacto.borrarContacto', id=contacto.id) }}" method="POST" style="display:inline;" onsubmit="return confirmDelete('{{ contacto.email }}')">
+                            <button type="submit" class="btn btn-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" fill-rule="evenodd"><path d="m12.594 23.258l-.012.002l-.071.035l-.02.004l-.014-.004l-.071-.036q-.016-.004-.024.006l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.004l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.016-.018m.264-.113l-.014.002l-.184.093l-.01.01l-.003.011l.018.43l.005.012l.008.008l.201.092q.019.005.029-.008l.004-.014l-.034-.614q-.005-.019-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.614q.001.018.017.024l.015-.002l.201-.093l.01-.008l.003-.011l.018-.43l-.003-.012l-.01-.01z"/><path fill="red" d="M7.823 3.368A2 2 0 0 1 9.721 2h4.558a2 2 0 0 1 1.898 1.368L16.72 5H20a1 1 0 1 1 0 2h-1v12a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3V7H4a1 1 0 0 1 0-2h3.28zM9.387 5l.334-1h4.558l.334 1z"/></g></svg>
+                            </button>
+                        </form>
+                    </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+    <p class="no-contactos">No hay solicitudes de contacto</p>
+{% endif %}
+<div class="pagination-wrapper">
+    {%if check_permission(session, 'contacto_index')%}
+        {% if contactos.has_prev %}
+            <a href="{{ url_for('contacto.verContactos', page=contactos.prev_num, estado = request.args.get('estado', ''), direccion= request.args.get('direccion', 'desc')) }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20"><path fill="black" d="m2 10l8 8l1.4-1.4L5.8 11H18V9H5.8l5.6-5.6L10 2z"/></svg></a>
+        {% endif %}
+        {% if contactos.has_next %}
+            <a href="{{ url_for('contacto.verContactos', page=contactos.next_num, estado = request.args.get('estado', ''), direccion= request.args.get('direccion', 'desc')) }}">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 20 20"><path fill="black" d="M8.6 3.4L14.2 9H2v2h12.2l-5.6 5.6L10 18l8-8l-8-8z"/></svg></a>
+        {% endif %}
+    {% endif %}
+</div>
+<script>
+
+function confirmDelete(email) {
+    return confirm(`¿Está seguro que desea borrar la solicitud de contacto de ${email}?`);
+}
+
+</script>
+
+{% endblock %}

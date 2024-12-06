@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Agregar Nuevo Legajo</title>
+    <style>
+        .container {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    {% extends "layout.html" %}
+    {% block content %}
+    <div class="container">
+        <h1 class="text-center">Agregar Nuevo Legajo</h1>
+
+        <form action="{{ url_for('jya.crear_legajo') }}" method="POST">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required>
+            </div>
+
+            <div class="form-group">
+                <label for="apellido">Apellido:</label>
+                <input type="text" class="form-control" id="apellido" name="apellido" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dni">DNI:</label>
+                <input type="number" class="form-control" id="dni" name="dni" required>
+            </div>
+
+            <div class="form-group">
+                <label for="edad">Edad:</label>
+                <input type="number" class="form-control" id="edad" name="edad" min="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="fecha_nacimiento">Fecha de Nacimiento:</label>
+                <input type="date" class="form-control" id="fecha_nacimiento" name="fecha_nacimiento" required>
+            </div>
+
+            <div class="form-group">
+                <label for="lugar_nacimiento">Lugar de Nacimiento:</label>
+                <input type="text" class="form-control" id="lugar_nacimiento" name="lugar_nacimiento" required>
+            </div>
+
+            <div class="form-group">
+                <label for="domicilio_actual">Domicilio Actual:</label>
+                <input type="text" class="form-control" id="domicilio_actual" name="domicilio_actual" required>
+            </div>
+
+            <div class="form-group">
+                <label for="telefono_actual">Teléfono Actual:</label>
+                <input type="tel" class="form-control" id="telefono_actual" name="telefono_actual" required>
+            </div>
+
+            <div class="form-group">
+                <label for="contacto_emergencia">Contacto de Emergencia:</label>
+                <input type="text" class="form-control" id="contacto_emergencia" name="contacto_emergencia" required>
+            </div>
+
+            <div class="form-group">
+                <label for="tel">Tel. de Emergencia:</label>
+                <input type="tel" class="form-control" id="tel" name="tel" required>
+            </div>
+
+            <div class="form-group">
+                <label for="becado">¿Becado?</label>
+                <select class="form-control" id="becado" name="becado" required onchange="togglePorcentaje()">
+                    <option value="True" selected>Sí</option>
+                    <option value="False" >No</option>
+                </select>
+            </div>
+            
+            <div class="form-group" id="porcentaje-container">
+                <label for="porcentaje_beca">Porcentaje de Beca:</label>
+                <input type="number" class="form-control" id="porcentaje_beca" name="porcentaje_beca" min="0" max="100"
+                       value="porcentaje_beca" placeholder="Ingresa el porcentaje">
+            </div>
+
+            <div class="form-group">
+                <label for="profesionales_atienden">Profesionales que Atienden:</label>
+                <input type="text" class="form-control" id="profesionales_atienden" name="profesionales_atienden" required>
+            </div>
+
+            <div class="form-group">
+                <label for="certificado_discapacidad">¿Posee certificado de discapacidad?</label>
+                <select class="form-control" id="certificado_discapacidad" name="certificado_discapacidad" required>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="diagnostico">Diagnóstico:</label>
+                <select class="form-control" id="diagnostico" name="diagnostico" required>
+                    <option value="ECNE">ECNE</option>
+                    <option value="Lesión post-traumática">Lesión post-traumática</option>
+                    <option value="Mielomeningocele">Mielomeningocele</option>
+                    <option value="Esclerosis Múltiple">Esclerosis Múltiple</option>
+                    <option value="Escoliosis Leve">Escoliosis Leve</option>
+                    <option value="Secuelas de ACV">Secuelas de ACV</option>
+                    <option value="Discapacidad Intelectual">Discapacidad Intelectual</option>
+                    <option value="Trastorno del Espectro Autista">Trastorno del Espectro Autista</option>
+                    <option value="Trastorno del Aprendizaje">Trastorno del Aprendizaje</option>
+                    <option value="Trastorno por Déficit de Atención/Hiperactividad">Trastorno por Déficit de Atención/Hiperactividad</option>
+                    <option value="Trastorno de la Comunicación">Trastorno de la Comunicación</option>
+                    <option value="Trastorno de Ansiedad">Trastorno de Ansiedad</option>
+                    <option value="Síndrome de Down">Síndrome de Down</option>
+                    <option value="Retraso Madurativo">Retraso Madurativo</option>
+                    <option value="Psicosis">Psicosis</option>
+                    <option value="Trastorno de Conducta">Trastorno de Conducta</option>
+                    <option value="Trastornos del ánimo y afectivos">Trastornos del ánimo y afectivos</option>
+                    <option value="Trastorno Alimentario">Trastorno Alimentario</option>
+                    <option value="OTRO">OTRO</option>
+                </select>
+            </div>
+            <div>
+                <label for="tipo_diagnostico">Tipo diagnostico:</label>
+                <input type="text" class="form-control" id="tipo_diagnostico" name="tipo_diagnostico">
+            </div>
+
+            <div class="form-group">
+                <label for="tipo_discapacidad">Tipo de Discapacidad:</label>
+                <select class="form-control" id="tipo_discapacidad" name="tipo_discapacidad" required>
+                    <option value="Ninguna">Ninguna</option>
+                    <option value="Mental">Mental</option>
+                    <option value="Motora">Motora</option>
+                    <option value="Sensorial">Sensorial</option>
+                    <option value="Visceral">Visceral</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="asignacion_familiar">¿Recibe Asignación Familiar?</label>
+                <select class="form-control" id="asignacion_familiar" name="asignacion_familiar" required>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="tipo_asignacion_familiar">Tipo de Asignación Familiar:</label>
+                <select class="form-control" id="tipo_asignacion_familiar" name="tipo_asignacion_familiar" required>
+                    <option value="NO" selected>No</option>
+                    <option value="Asignación Universal por hijo">Asignación Universal por hijo</option>
+                    <option value="Asignación Universal por hijo con Discapacidad">Asignación Universal por hijo con Discapacidad</option>
+                    <option value="Asignación por ayuda escolar anual">Asignación por ayuda escolar anual</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="es_veneficiaro_pension">¿Es Beneficiario de Pensión?</label>
+                <select class="form-control" id="es_veneficiario_pension" name="es_veneficiario_pension" required>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="pension">Pensión:</label>
+                <select class="form-control" id="pension" name="pension" >
+                    <option value="NO" selected>No</option>
+                    <option value="Provincial">Provincial</option>
+                    <option value="Nacional">Nacional</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="obra_social">Obra Social:</label>
+                <input type="text" class="form-control" id="obra_social" name="obra_social" required>
+            </div>
+
+            <div class="form-group">
+                <label for="num_afiliado">Número de Afiliado:</label>
+                <input type="text" class="form-control" id="num_afiliado" name="num_afiliado" required>
+            </div>
+
+            <div class="form-group">
+                <label for="posee_curatela">¿Posee Curatela?</label>
+                <select class="form-control" id="posee_curatela" name="posee_curatela" required>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="observaciones_curatela">Observaciones sobre la Curatela:</label>
+                <input type="text" class="form-control" id="observaciones_curatela" name="observaciones_curatela">
+            </div>
+
+            <div class="form-group">
+                <label for="nombre_escuela">Nombre de la Escuela:</label>
+                <input type="text" class="form-control" id="nombre_escuela" name="nombre_escuela">
+            </div>
+
+            <div class="form-group">
+                <label for="direccion_escuela">Dirección de la Escuela:</label>
+                <input type="text" class="form-control" id="direccion_escuela" name="direccion_escuela">
+            </div>
+
+            <div class="form-group">
+                <label for="telefono_escuela">Teléfono de la Escuela:</label>
+                <input type="text" class="form-control" id="telefono_escuela" name="telefono_escuela">
+            </div>
+
+            <div class="form-group">
+                <label for="anio_actual_escuela">Año Actual de la Escuela:</label>
+                <input type="text" class="form-control" id="anio_actual_escuela" name="anio_actual_escuela">
+            </div>
+
+            <div class="form-group">
+                <label for="observaciones_escuela">Observaciones de la Escuela:</label>
+                <input type="text" class="form-control" id="observaciones_escuela" name="observaciones_escuela">
+            </div>
+            <h2 class="mt-4">Tutor 1</h2>
+            <div class="form-group">
+                <label for="parentesco_tutor_1">Parentesco:</label>
+                <input type="text" class="form-control" id="parentesco_tutor_1" name="parentesco_tutor_1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="nombre_tutor_1">Nombre:</label>
+                <input type="text" class="form-control" id="nombre_tutor_1" name="nombre_tutor_1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="apellido_tutor_1">Apellido:</label>
+                <input type="text" class="form-control" id="apellido_tutor_1" name="apellido_tutor_1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="dni_tutor_1">DNI:</label>
+                <input type="text" class="form-control" id="dni_tutor_1" name="dni_tutor_1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="domicilio_tutor_1">Domicilio actual (calle, nº, piso, depto., localidad, provincia):</label>
+                <input type="text" class="form-control" id="domicilio_tutor_1" name="domicilio_tutor_1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="celular_tutor_1">Celular actual:</label>
+                <input type="tel" class="form-control" id="celular_tutor_1" name="celular_tutor_1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email_tutor_1">E-mail:</label>
+                <input type="email" class="form-control" id="email_tutor_1" name="email_tutor_1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="nivel_escolaridad_tutor_1">Nivel de escolaridad (máximo nivel alcanzado):</label>
+                <select class="form-control" id="nivel_escolaridad_tutor_1" name="nivel_escolaridad_tutor_1" required>
+                    <option value="Primario">Primario</option>
+                    <option value="Secundario">Secundario</option>
+                    <option value="Terciario">Terciario</option>
+                    <option value="Universitario">Universitario</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="ocupacion_tutor_1">Actividad u ocupación:</label>
+                <input type="text" class="form-control" id="ocupacion_tutor_1" name="ocupacion_tutor_1" required>
+            </div>
+
+            <h2 class="mt-4">Tutor 2</h2>
+            <div class="form-group">
+                <label for="parentesco_tutor_2">Parentesco:</label>
+                <input type="text" class="form-control" id="parentesco_tutor_2" name="parentesco_tutor_2" value="">
+            </div>
+
+            <div class="form-group">
+                <label for="nombre_tutor_2">Nombre:</label>
+                <input type="text" class="form-control" id="nombre_tutor_2" name="nombre_tutor_2" value="">
+            </div>
+
+            <div class="form-group">
+                <label for="apellido_tutor_2">Apellido:</label>
+                <input type="text" class="form-control" id="apellido_tutor_2" name="apellido_tutor_2">
+            </div>
+
+            <div class="form-group">
+                <label for="dni_tutor_2">DNI:</label>
+                <input type="text" class="form-control" id="dni_tutor_2" name="dni_tutor_2">
+            </div>
+
+            <div class="form-group">
+                <label for="domicilio_tutor_2">Domicilio actual (calle, nº, piso, depto., localidad, provincia):</label>
+                <input type="text" class="form-control" id="domicilio_tutor_2" name="domicilio_tutor_2">
+            </div>
+
+            <div class="form-group">
+                <label for="celular_tutor_2">Celular actual:</label>
+                <input type="tel" class="form-control" id="celular_tutor_2" name="celular_tutor_2">
+            </div>
+
+            <div class="form-group">
+                <label for="email_tutor_2">E-mail:</label>
+                <input type="email" class="form-control" id="email_tutor_2" name="email_tutor_2">
+            </div>
+
+            <div class="form-group">
+                <label for="nivel_escolaridad_tutor_2">Nivel de escolaridad (máximo nivel alcanzado):</label>
+                <select class="form-control" id="nivel_escolaridad_tutor_2" name="nivel_escolaridad_tutor_2">
+                    <option value="Primario">Primario</option>
+                    <option value="Secundario">Secundario</option>
+                    <option value="Terciario">Terciario</option>
+                    <option value="Universitario">Universitario</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="ocupacion_tutor_2">Actividad u ocupación:</label>
+                <input type="text" class="form-control" id="ocupacion_tutor_2" name="ocupacion_tutor_2">
+            </div>
+
+            <h2>TRABAJO EN NUESTRA INSTITUCIÓN</h2>
+            <div class="mb-3">
+                <label for="propuesta_trabajo" class="form-label">Propuesta de Trabajo Institucional</label>
+                <select class="form-select" id="propuesta_trabajo" name="propuesta_trabajo" required>
+                    <option value="">Selecciona una opción</option>
+                    <option value="Hipoterapia">Hipoterapia</option>
+                    <option value="Monta Terapéutica">Monta Terapéutica</option>
+                    <option value="Deporte Ecuestre Adaptado">Deporte Ecuestre Adaptado</option>
+                    <option value="Actividades Recreativas">Actividades Recreativas</option>
+                    <option value="Equitación">Equitación</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="condicion" class="form-label">Condición</label>
+                <select class="form-select" id="condicion" name="condicion" required>
+                    <option value="">Selecciona una opción</option>
+                    <option value="REGULAR">REGULAR</option>
+                    <option value="DE BAJA">DE BAJA</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="sede" class="form-label">SEDE</label>
+                <select class="form-select" id="sede" name="sede" required>
+                    <option value="">Selecciona una opción</option>
+                    <option value="CASJ">CASJ</option>
+                    <option value="HLP">HLP</option>
+                    <option value="OTRO">OTRO</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">DÍA</label>
+                <div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="lunes" name="dia[]" value="Lunes">
+                        <label class="form-check-label" for="lunes">Lunes</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="martes" name="dia[]" value="Martes" checked>
+                        <label class="form-check-label" for="martes">Martes</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="miercoles" name="dia[]" value="Miércoles">
+                        <label class="form-check-label" for="miercoles">Miércoles</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="jueves" name="dia[]" value="Jueves">
+                        <label class="form-check-label" for="jueves">Jueves</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="viernes" name="dia[]" value="Viernes">
+                        <label class="form-check-label" for="viernes">Viernes</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="sabado" name="dia[]" value="Sábado">
+                        <label class="form-check-label" for="sabado">Sábado</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="domingo" name="dia[]" value="Domingo">
+                        <label class="form-check-label" for="domingo">Domingo</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="profesor" class="form-label">Profesor/a o Terapeuta</label>
+                <select class="form-select" id="profesor" name="profesor" required>
+                    <option value="">Cargando...</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="conductor" class="form-label">Conductor/a del Caballo</label>
+                <select class="form-select" id="conductor" name="conductor" required>
+                    <option value="">Cargando...</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="caballo" class="form-label">Caballo</label>
+                <select class="form-select" id="caballo" name="caballo" required>
+                    <option value="">Cargando...</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="auxiliar" class="form-label">Auxiliar de Pista</label>
+                <select class="form-select" id="auxiliar" name="auxiliar" required>
+                    <option value="">Cargando...</option>
+                </select>
+            </div>
+
+
+            <div class="btn-container text-center mt-4">
+                <button type="submit" id="submit" class="btn btn-success">Agregar Legajo</button>
+                <a href="{{ url_for('jya.home_jya') }}" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+    <script>
+
+        function cargarCaballos() {
+            $.ajax({
+            url: "/jya/obtenerCaballos", 
+            dataType: 'json',
+            success: function(data) {
+                console.log(data)
+                const menu = $("#caballo");
+                menu.empty(); 
+                menu.append('<option value="">Selecciona un caballo</option>'); 
+                data.forEach(function(item) {
+                    const option = `<option value="${item.id}">${item.nombre+" ("+item.sede_asignada+")"}</option>`;
+                    menu.append(option);
+                });
+            },
+            error: function(error) {
+                console.error('Error al buscar caballos:', error);
+                const menu = $(selector);
+                menu.empty();
+                menu.append('<option value="">Error al cargar</option>'); 
+            }
+        });
+        }
+
+        $(document).ready(function() {
+        cargarEmpleados('/jya/obtenerPuesto', '#profesor', 'Profesor de Equitacion');
+        cargarEmpleados('/jya/obtenerPuesto', '#conductor', 'Conductor');
+        cargarEmpleados('/jya/obtenerPuesto', '#auxiliar', 'Auxiliar de pista');
+        cargarCaballos()
+    });
+
+    function cargarEmpleados(url, selector, param) {
+        $.ajax({
+            url: url+'/'+param, 
+            dataType: 'json',
+            success: function(data) {
+                const menu = $(selector);
+                menu.empty(); 
+                menu.append('<option value="">Selecciona una opción</option>'); 
+                data.forEach(function(item) {
+                    const option = `<option value="${item.id}">${item.nombre} ${item.apellido}</option>`;
+                    menu.append(option);
+                });
+            },
+            error: function(error) {
+                console.error('Error al buscar empleados:', error);
+                const menu = $(selector);
+                menu.empty();
+                menu.append('<option value="">Error al cargar</option>'); 
+            }
+        });
+    }
+    function obtenerCheckboxSeleccionados() {
+        const checkboxes = document.querySelectorAll('input[name="dia[]"]:checked');
+        const diasSeleccionados = Array.from(checkboxes).map(checkbox => checkbox.value);
+        console.log(diasSeleccionados); 
+    }
+
+    document.getElementById('submit').addEventListener('click', obtenerCheckboxSeleccionados);
+
+    function togglePorcentaje() {
+        const selectBecado = document.getElementById("becado");
+        const porcentajeContainer = document.getElementById("porcentaje-container");
+
+        // Oculta o muestra el campo de porcentaje de beca según el valor seleccionado
+        if (selectBecado.value === "True") {
+            porcentajeContainer.style.display = "block";
+        } else {
+            porcentajeContainer.style.display = "none";
+        }
+    }
+
+    // Llamada inicial para ajustar la visibilidad según el valor predeterminado
+    document.addEventListener("DOMContentLoaded", function() {
+        togglePorcentaje();
+    });
+    </script>
+    {% endblock %}
+</body>
+</html>

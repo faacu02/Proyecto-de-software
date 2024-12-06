@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listado de Pagos</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            margin-top: 20px;
+        }
+        th, td {
+            text-align: center;
+        }
+        .btn-register {
+            float: right;
+            margin-bottom: 20px;
+            padding: 10px 20px; 
+            background-color: #28a745; 
+            color: white; 
+            border: none; 
+            border-radius: 4px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            transition: background-color 0.3s; 
+        }
+
+        .btn-register:hover {
+            background-color: #218838; 
+        }
+
+        .btn-delete {
+            background: none;
+            border: none;
+            color: #dc3545;
+            cursor: pointer;
+            padding: 0;
+        }
+        .btn-delete:hover {
+            text-decoration: underline;
+        }
+        .boton-atras {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: rgb(179, 13, 13);
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 5px;
+        border: 2px solid transparent;
+        transition: background-color 0.3s ease, border-color 0.3s ease;
+        cursor: pointer;
+        }
+
+        .boton-atras:hover {
+            background-color: darkred;
+        }
+
+        .boton-atras:active {
+            background-color: rgb(90, 4, 4);
+            transform: scale(0.98); 
+        }
+
+    </style>
+</head>
+<body>
+    {% extends "layout.html" %}
+    {% block content %}
+<div class="container">
+    <h2>Listado de Pagos</h2>
+
+    {% if check_permission(session, 'pagos_create')%}
+    <button class="btn btn-primary btn-register" onclick="registrarPago()">Registrar Pago</button>
+    {% endif %}
+    <button class="boton-atras" onclick="regresar()">Volver</button>
+    <form method="get" action="{{ url_for('pago.filtrar_por_fechas') }}" class="row justify-content-center mb-4">
+        <div class="col-md-3">
+            <label for="fecha-inicio">Fecha Inicio:</label>
+            <input type="date" id="fecha-inicio" name="fecha_inicio" class="form-control" value="{{ fecha_ini if fecha_ini else '' }}">
+        </div>
+        <div class="col-md-3">
+            <label for="fecha-fin">Fecha Fin:</label>
+            <input type="date" id="fecha-fin" name="fecha_fin" class="form-control" value="{{ fecha_fin if fecha_fin else '' }}">
+        </div>
+        <div class="col-md-3">
+            <label for="tipo-pago">Tipo de Pago:</label>
+            <select id="tipo-pago" name="tipo_pago" class="form-control">
+                <option value="all" {% if tipo_pago == 'all' or not tipo_pago %}selected{% endif %}>Seleccionar tipo de pago</option>
+                <option value="honorario" {% if tipo_pago == 'honorario' %}selected{% endif %}>honorario</option>
+                <option value="gastosVarios" {% if tipo_pago == 'gastosVarios' %}selected{% endif %}>gastosVarios</option>
+                <option value="proveedor" {% if tipo_pago == 'proveedor' %}selected{% endif %}>proveedor</option>
+            </select>
+        </div>
+        <div class="col-md-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-success flex-fill me-2">
+                <span class="d-inline-block" style="min-width: 100px;">Buscar</span>
+            </button>
+        </div>
+    </form>
+    
+    <table class="table table-bordered table-striped">
+        <thead class="thead-light">
+            <tr>
+                <th>Tipo de Pago</th>
+                <th>Beneficiario</th>
+                <th>Fecha</th>
+                <th>Monto</th>
+                <th>Descripción</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="pagos-list">
+            {% for pago in pagos %}
+            <tr id="pago-{{ pago.id }}">
+                <td>{{ pago.tipo_pago }}</td>
+                <td>
+                    {% if pago.tipo_pago == "honorario" %}
+                        {{ pago.beneficiario }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>{{ pago.fecha_pago.strftime('%Y-%m-%d') }}  </td>
+                <td>{{ pago.monto }}</td>
+                <td>{{ pago.descripcion }}</td>
+                <td>
+                    {% if check_permission(session, 'pagos_destroy')%}
+                    <button class="btn-delete" onclick="eliminarPago(`{{ pago.id }}`)">
+                        🗑️
+                    </button>
+                    {% endif %}
+                    {% if check_permission(session, 'pagos_show')%}
+                    <button onclick="visualizarPago(`{{ pago.id }}`)">
+                        👁
+                    </button>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        
+    </table>
+    <nav aria-label="Paginación">
+        <ul class="pagination justify-content-center">
+            {% if current_page > 1 %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('pago.home_pago', page=current_page-1, per_page=per_page, fecha_inicio= fecha_ini, fecha_fin= fecha_fin, tipo_pago= tipo_pago) }}" aria-label="Anterior">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+            {% endif %}
+
+            {% for page in range(1, total_pages + 1) %}
+            <li class="page-item {% if page == current_page %}active{% endif %}">
+                <a class="page-link" href="{{ url_for('pago.home_pago', page=page, per_page=per_page, fecha_inicio= fecha_ini, fecha_fin= fecha_fin, tipo_pago= tipo_pago) }}">{{ page }}</a>
+            </li>
+            {% endfor %}
+
+            {% if current_page < total_pages %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('pago.home_pago', page=current_page+1, per_page=per_page, fecha_inicio= fecha_ini, fecha_fin= fecha_fin, tipo_pago= tipo_pago) }}" aria-label="Siguiente">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+<script>
+
+let ordenSeleccionado = 'desc'; 
+
+    function toggleOrden() {
+        const btnOrden = document.getElementById('btnOrden');
+        const ordenActual = btnOrden.getAttribute('data-orden'); 
+
+        if (ordenActual === 'desc') {
+            btnOrden.setAttribute('data-orden', 'asc'); 
+            btnOrden.querySelector('span').textContent = '↑'; 
+        } else {
+            btnOrden.setAttribute('data-orden', 'desc'); 
+            btnOrden.querySelector('span').textContent = '↓'; 
+        }
+        
+        console.log("Orden seleccionado:", btnOrden.getAttribute('data-orden'));
+    }
+    function registrarPago() {
+        window.location.href = "{{ url_for('pago.crear_pago') }}"; 
+    }
+
+    function eliminarPago(id) {
+    console.log(id); 
+    if (confirm("¿Estás seguro de que deseas eliminar este pago?")) {
+        fetch(`{{ url_for('pago.eliminar_pago', id=0) }}`.replace(0, id), {
+            method: 'POST', 
+        }).then(response => {
+            if (response.ok) {
+                document.getElementById('pago-' + id).remove();
+            } else {
+                console.error('Error eliminando el pago.');
+            }
+        }).catch(error => console.error('Error en la petición:', error));
+    }
+}
+    function visualizarPago(id) {
+        window.location.href = "{{ url_for('pago.detalles_pago', id=0) }}".replace(0,id);
+    }
+
+    function regresar(){
+        window.location.href = "{{ url_for('home_page')}}"
+    }
+
+
+
+</script>
+{% endblock %}
+</body>
+</html>

@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Modificar Cobro</h1>
+
+<form action="{{ url_for('cobro.editar_cobro_POST', id=cobro.id) }}" method="POST">
+    <div class="form-group">
+        <label for="fecha_pago">Fecha de Pago</label>
+        <input type="date" class="form-control" id="fecha_pago" name="fecha_pago" value="{{ cobro.fecha_pago.strftime('%Y-%m-%d') }}" required>
+    </div>
+
+    <div class="form-group">
+        <label for="medio_pago">Medio de Pago</label>
+        <select class="form-control" id="medio_pago" name="medio_pago" required>
+            <option value="efectivo" {% if cobro.medio_pago == 'efectivo' %}selected{% endif %}>Efectivo</option>
+            <option value="tarjeta_debito" {% if cobro.medio_pago == 'tarjeta_debito' %}selected{% endif %}>Tarjeta de Débito</option>
+            <option value="tarjeta_credito" {% if cobro.medio_pago == 'tarjeta_credito' %}selected{% endif %}>Tarjeta de Crédito</option>
+            <option value="transferencia" {% if cobro.medio_pago == 'transferencia' %}selected{% endif %}>Transferencia</option>
+            <option value="otro" {% if cobro.medio_pago == 'otro' %}selected{% endif %}>Otro</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="monto">Monto</label>
+        <input type="number" class="form-control" step="0.01" id="monto" name="monto" value="{{ cobro.monto }}" required>
+    </div>
+
+    <div class="form-group">
+        <label for="JA">Seleccione un J&A</label>
+        <select class="form-control" id="JA" name="JyA_ref">
+            <option value="">Seleccione un J&A</option>
+            {% for ja in JAs %}
+            <option value="{{ ja.id }}" {% if ja.id == cobro.JyA_ref  %}selected{% endif %}>{{ ja.nombre }} {{ ja.apellido }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="miembro">Seleccione un Miembro del Equipo</label>
+        <select class="form-control" id="miembro" name="receptor" required>
+            <option value="">Seleccione un miembro del equipo</option>
+            {% for miembro in miembros %}
+            <option value="{{ miembro.id }}" {% if cobro.receptor == miembro.id  %}selected{% endif %}>{{ miembro.nombre }} {{ miembro.apellido }}</option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="observaciones">Observaciones</label>
+        <textarea class="form-control" id="observaciones" name="observaciones" rows="3">{{ cobro.observaciones }}</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+</form>
+{% endblock %}

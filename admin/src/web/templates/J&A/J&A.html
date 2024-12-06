@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .pagination li {
+            margin: 0 5px;
+        }
+
+        .pagination a {
+            text-decoration: none;
+            padding: 8px 16px;
+            background-color: #f2f2f2;
+            color: #000;
+            border-radius: 5px;
+        }
+
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .pagination a.disabled {
+            background-color: #ddd;
+            color: #999;
+            pointer-events: none;
+        }
+
+        .pagination-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .table-container {
+            max-width: 800px;
+            margin: 0 auto;
+            margin-top: 30px;
+        }
+
+        .table-container ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .table-container li {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        .table-container {
+            margin-top: 20px;
+        }
+
+        table {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        thead th {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+        }
+
+        tbody td {
+            text-align: center;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+
+        /* Estilos de la paginación */
+        .pagination {
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .page-item.active .page-link {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        .page-link {
+            color: #4CAF50;
+        }
+
+        .page-link:hover {
+            background-color: #e9e9e9;
+            color: #4CAF50;
+        }
+
+        .disabled .page-link {
+            color: #ccc;
+        }
+
+        /* Botón de agregar nuevo legajo */
+        .add-legajo-btn {
+            display: block;
+            margin: 20px auto;
+            text-align: center;
+        }
+        .btn-volver {
+            background-color: #9c1313;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn-volver:hover {
+            background-color: #4e0808;
+            transform: scale(1.05);
+        }
+
+        .btn-volver:active {
+            transform: scale(0.95);
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        /* Estilo del contenedor principal */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos del formulario de búsqueda */
+        .search-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .search-container input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+            transition: border-color 0.3s;
+        }
+
+        .search-container input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        /* Estilo del botón de búsqueda */
+        .search-container button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .search-container button:hover {
+            background-color: #45a049;
+        }
+
+        /* Estilo para los títulos de secciones */
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #333;
+        }
+
+        /* Estilo para el contenedor de tablas */
+        .table-container {
+            max-width: 800px;
+            margin: 0 auto;
+            margin-top: 30px;
+        }
+
+        /* Estilo de filas de tabla */
+        tbody tr:hover {
+            background-color: #f1f1f1;
+            cursor: pointer;
+        }
+
+        /* Estilos para los botones */
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        /* Estilos para el botón volver */
+        .btn-volver {
+            background-color: #9c1313;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border-radius: 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn-volver:hover {
+            background-color: #4e0808;
+            transform: scale(1.05);
+        }
+
+        .btn-volver:active {
+            transform: scale(0.95);
+        }
+        .btn-sort {
+            background-color: #060f06; /* Color de fondo */
+            color: white; /* Color del texto */
+            border: none; /* Sin borde */
+            padding: 5px 10px; /* Espaciado interno más pequeño */
+            font-size: 12px; /* Tamaño de fuente más pequeño */
+            border-radius: 5px; /* Bordes redondeados */
+            cursor: pointer; /* Cambiar cursor */
+            transition: background-color 0.3s, transform 0.3s; /* Animación suave */
+            margin-right: 5px; /* Espacio entre botones */
+        }
+
+        .btn-sort:hover {
+            background-color: #0e110e; /* Color de fondo al pasar el ratón */
+            transform: scale(1.05); /* Efecto de aumento */
+        }
+
+        .btn-sort:active {
+            transform: scale(0.95); /* Efecto de disminución al hacer clic */
+        }
+
+        /* Ajustar el tamaño de los botones de búsqueda */
+        .search-container button {
+            padding: 5px 10px; /* Tamaño más pequeño para el botón de búsqueda */
+        }
+
+    </style>
+</head>
+<body>
+    {% extends "layout.html" %}
+    {% block content %}
+    <div class="container">
+        <h1 class="text-center">Lista de Legajos</h1>
+        {% if check_permission(session, 'jya_create') %}
+        <div class="header-container">
+            <div class="add-legajo-btn">
+                <a href="{{ url_for('jya.add_legajo') }}" class="btn btn-success">Agregar Nuevo Legajo</a>
+            </div>
+        {% endif %}
+        <form method="GET" class="search-container" action="{{ url_for('jya.buscar_jya', nombre=nombre, apellido=apellido, dni=dni, prof=prof, page=page) }}">
+            <input type="text" name="nombre" placeholder="Buscar por Nombre..." value="{{ request.args.get('nombre', '') }}">
+            <input type="text" name="dni" placeholder="Buscar por DNI..." value="{{ request.args.get('dni', '') }}">
+            <input type="text" name="apellido" placeholder="Buscar por Apellido..." value="{{ request.args.get('apellido', '') }}">
+            <input type="text" name="prof" placeholder="Buscar por Profesionales..." value="{{ request.args.get('prof', '') }}">
+            <button type="submit">Buscar</button>
+        </form>
+        <form method="GET" id="sortForm" action="{{ url_for('jya.ordenar', order=order, sort=sort, docs=items, page=page, total_pages = total_pages) }}">
+            <div class="sorting-buttons">
+                <button type="button" class="btn-sort" onclick="toggleSort('nombre')">
+                    Ordenar Nombre <span id="icon-nombre">{{ '▲' if request.args.get('sort') == 'nombre' and request.args.get('order') == 'asc' else '▼' if request.args.get('sort') == 'nombre' and request.args.get('order') == 'desc' else '' }}</span>
+                </button>
+                <input type="hidden" name="sort" id="sort" value="{{ request.args.get('sort', '') }}">
+                <input type="hidden" name="order" id="order" value="{{ request.args.get('order', 'asc') }}">
+            </div>
+        
+            <div class="sorting-buttons">
+                <button type="button" class="btn-sort" onclick="toggleSort('apellido')">
+                    Ordenar Apellido <span id="icon-apellido">{{ '▲' if request.args.get('sort') == 'apellido' and request.args.get('order') == 'asc' else '▼' if request.args.get('sort') == 'apellido' and request.args.get('order') == 'desc' else '' }}</span>
+                </button>
+            </div>
+        </form>
+        
+        </div>
+        <table class="table table-hover table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>DNI</th>
+                    <th>Edad</th>
+                    <th>Fecha de Nacimiento</th>
+                    <th>Lugar de Nacimiento</th>
+                    <th>Domicilio Actual</th>
+                    <th>Teléfono Actual</th>
+                    <th>Contacto de Emergencia</th>
+                    <th>Tel. Emergencia</th>
+                    <th>Becado</th>
+                    <th>Porcentaje Beca</th>
+                    <th>Profesionales Atienden</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for legajo in items %}
+                {% if check_permission(session, 'jya_show')%}
+                <tr onclick="window.location.href=`{{ url_for('jya.detalle_legajo', id=legajo.id) }}`">
+                    <td>{{ legajo.nombre }}</td>
+                    <td>{{ legajo.apellido }}</td>
+                    <td>{{ legajo.dni }}</td>
+                    <td>{{ legajo.edad }}</td>
+                    <td>{{ legajo.fecha_nacimiento.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ legajo.lugar_nacimiento }}</td>
+                    <td>{{ legajo.domicilio_actual }}</td>
+                    <td>{{ legajo.telefono_actual }}</td>
+                    <td>{{ legajo.contacto_emergencia }}</td>
+                    <td>{{ legajo.tel }}</td>
+                    <td>{{ 'Sí' if legajo.becado else 'No' }}</td>
+                    <td>{{ legajo.porcentaje_beca }}</td>
+                    <td>{{ legajo.profesionales_atienden }}</td>
+                    {% if check_permission(session, 'jya_destroy')%}
+                    <td>
+                        <form action="{{ url_for('jya.delete_legajo', id=legajo.id) }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de que deseas eliminar este legajo?');">Eliminar</button>
+                        </form>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+            
+        </table>
+    </div>
+
+    <ul class="pagination">
+        <li>
+            <a href="{{ url_for('jya.home_jya', page=page-1) }}" class="{% if page == 1 %}disabled{% endif %}">Anterior</a>
+        </li>
+
+        {% for p in range(1, total_pages + 2) %}
+        <li>
+            <a href="{{ url_for('jya.home_jya', page=p) }}" class="{% if p == page %}active{% endif %}">{{ p }}</a>
+        </li>
+        {% endfor %}
+
+        <li>
+            <a href="{{ url_for('jya.home_jya', page=page+1) }}" class="{% if page == total_pages + 1 %}disabled{% endif %}">Siguiente</a>
+        </li>
+    </ul>
+    <script>
+        function toggleSort(field) {
+        var currentSort = document.getElementById('sort').value;
+        var currentOrder = document.getElementById('order').value;
+
+
+        if (currentSort === field) {
+            currentOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+        } else {
+            currentOrder = 'asc';  
+        }
+
+        document.getElementById('sort').value = field;
+        document.getElementById('order').value = currentOrder;
+        console.log("No se que pasa")
+        document.getElementById('sortForm').submit();
+    }
+    </script>
+    {% endblock %}
+</body>
+</html>

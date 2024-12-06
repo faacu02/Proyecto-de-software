@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Registro de Pago</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"], input[type="date"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .popup {
+            visibility: hidden;
+            width: 300px;
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            border-radius: 5px;
+            position: fixed;
+            z-index: 1000;
+            top: 50px;
+            right: 20px;
+            transition: visibility 0.5s, opacity 0.5s linear;
+            opacity: 0;
+        }
+
+        .popup.show {
+            visibility: visible;
+            opacity: 1;
+        }
+        .dropdown {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+        }
+
+        .dropdown-toggle {
+            padding: 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .arrow {
+            margin-left: 10px;
+        }
+
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            background-color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            max-height: 150px;
+            overflow-y: auto;
+            z-index: 1;
+        }
+
+        .dropdown-menu label {
+            display: block;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .dropdown-menu label:hover {
+            background-color: #f0f0f0;
+        }
+        .boton-atras {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: rgb(179, 13, 13); /* Color de fondo rojo */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .boton-atras:hover {
+            background-color: darkred; /* Color de fondo al pasar el mouse */
+        }
+        .boton-atras {
+        margin-top: 10px; /* Agrega un margen superior de 10px */
+        }
+
+    </style>
+</head>
+<body>
+    {% extends "layout.html" %}
+    {% block content %}
+<div class="container">
+    <h2>Registro de Pago</h2>
+    <form action="/pago/registrar_pago" method="POST">
+        <div class="form-group">
+            <label>Tipo de Pago</label>
+            <select id="tipo_pago" name="tipo_pago" required>
+                <option value="honorario">Honorarios</option>
+                <option value="proveedor">Proveedor</option>
+                <option value="gastosVarios">Gastos varios</option>
+            </select>
+        </div>
+        <div class="form-group" id="beneficiario-container">
+            <label for="beneficiario">Beneficiario</label>
+                <select id="beneficiarioMenu" name="beneficiario">
+                    <option value="">Selecciona un beneficiario</option>
+                </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="monto">Monto</label>
+            <input type="number" id="monto" name="monto" step="0.01" placeholder="Monto a pagar" required>
+        </div>
+        <div class="form-group">
+            <label for="descripcion">Descripcion</label>
+            <input type="text" id="Descripcion" name="descripcion" step="0.01" placeholder="Descripcion" required>
+        </div>
+        {% if check_permission(session, 'pagos_create')%}
+        <button type="submit">Registrar Pago</button>
+        {% endif %}
+    </form>
+    <button class="boton-atras" onclick="regresar()">Volver</button>
+</div>
+<div id="flash-message" class="popup">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
+<script>
+ window.onload = function() {
+        var flashMessage = document.getElementById('flash-message');
+        if (flashMessage.innerHTML.trim() !== "") {
+            flashMessage.classList.add('show');
+            setTimeout(function() {
+                flashMessage.classList.remove('show');
+            }, 5000); 
+        }
+    };
+    function regresar(){
+        window.location.href = "{{ url_for('pago.home_pago')}}"
+    }
+    $(document).ready(function() {
+    $.ajax({
+        url: '/pago/buscarEmpleados', 
+        dataType: 'json',
+        success: function(data) {
+            const menu = $('#beneficiarioMenu');
+            menu.empty(); 
+            data.forEach(function(item) {
+                const option = `<option value="${item.id}">${item.nombre} ${item.apellido}</option>`;
+                menu.append(option);
+            });
+        },
+        error: function(error) {
+            console.error('Error al buscar empleados:', error);
+        }
+    });
+});
+
+
+        const tipoPagoInicial = document.getElementById('tipo_pago').value;
+        console.log(tipoPagoInicial);
+        const beneficiarioContainer = document.getElementById('beneficiario-container');
+        if (tipoPagoInicial !== 'honorario') {
+            beneficiarioContainer.hidden = true;
+        }
+
+        document.getElementById('tipo_pago').addEventListener('change', function() {
+            const tipoPago = this.value;
+            console.log(tipoPago);
+            if (tipoPago === 'honorario') {
+                console.log(tipoPago);
+                beneficiarioContainer.hidden = false;  
+            } else {
+                beneficiarioContainer.hidden = true;  
+            }
+        });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+{% endblock %}
+</body>
+</html>

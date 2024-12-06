@@ -1,0 +1,23 @@
+{% extends "layout.html"%}
+
+{% block content%}
+<div class="container">
+    <form action="{{ url_for('ecuestre.modificar_archivo', id=archivo.id) }}" method="POST" class="formulario-modificacion">
+        <div class="form-group">
+            <label for="nombre">Titulo:</label>
+            <input type="text" id="nombre" name="nombre" class="form-control" value="{{ archivo.nombre }}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="tipo">Tipo de archivo:</label>
+            <select id="sexo" name="tipo" class="form-control" required>
+                <option value="ficha_general" {% if archivo.tipo == 'ficha_general' %}selected{% endif %}>Ficha General</option>
+                <option value="planificacion_entrenamiento" {% if archivo.tipo == 'planificacion_entrenamiento' %}selected{% endif %}>Planificación de Entrenamiento</option>
+                <option value="informe_evolucion" {% if archivo.tipo == 'informe_evolucion' %}selected{% endif %}>Informe de Evolución</option>
+                <option value="carga_imagenes" {% if archivo.tipo == 'carga_imagenes' %}selected{% endif %}>Carga de Imágenes</option>
+                <option value="registro_veterinario" {% if archivo.tipo == 'registro_veterinario' %}selected{% endif %}>Registro Veterinario</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Reportes y Graficos disponibles</h1>
+<h3>Graficos </h3>
+<div>
+<a href="{{ url_for('reportes.JA_becados') }}" class="btn btn-primary">Ver Gráfico de Becados</a>
+<a href="{{ url_for('reportes.JA_tipo_discapacidad') }}" class="btn btn-primary">Ver Gráfico de Tipos de Discapacidad de los J&A</a>
+<div>
+<div style="margin-top: 20px;"></div>
+<form action="{{ url_for('reportes.ganancias') }}" method="GET" class="row row-cols-lg-auto g-3 align-items-center">
+    <div class="col-12">
+        <label for="anio" class="form-label">Ingrese el año del que quiere ver las ganancias</label>
+        <input type="number" class="form-control" id="anio" name="anio" required>
+    </div>
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Ver Gráfico de Ganancias Anuales</button>
+    </div>
+</form>
+</div>
+
+<h3>Reportes</h3>
+<a href="{{ url_for('reportes.get_deudores') }}" class="btn btn-secondary">Reporte de Deudores</a>
+<a href="{{ url_for('reportes.get_best_propuesta_trabajo') }}" class="btn btn-secondary">Ranking propuestas de trabajos</a>
+
+
+<form action="{{ url_for('reportes.reporte_cobros') }}"method="GET" class="row row-cols-lg-auto g-3 align-items-center" >
+    <div class="form-group">
+        <label for="JA">Seleccione un J&A</label>
+        <select class="form-control" id="JA" name="ja_id" required>
+            <option value="">Seleccione un J&A</option>
+            {% for ja in JAs %}
+            <option value="{{ ja.id }}" {% if ja.id|string == request.args.get('ja_id') %}selected{% endif %}>{{ ja.nombre }} {{ ja.apellido}}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="fecha_inicio">Fecha de Pago - Inicio</label>
+        <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio"
+        value="{{ request.args.get('fecha_inicio', '') }}" >
+    </div>
+
+    <div class="form-group">
+        <label for="fecha_fin">Fecha de Pago - Fin</label>
+        <input type="date" class="form-control" id="fecha_fin" name="fecha_fin"
+        value="{{ request.args.get('fecha_fin', '') }}" >
+    </div>
+    <button type="submit" class="btn btn-secondary" >Ver Cobros</button>
+</form>
+{% block info %}
+{% endblock %}
+
+{% endblock %}

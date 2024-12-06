@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Legajo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .details-container {
+            width: 60%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .detail-field {
+            margin-bottom: 15px;
+        }
+
+        .detail-field strong {
+            display: inline-block;
+            width: 200px;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #007bff;
+        }
+
+    </style>
+</head>
+<body>
+    {% extends "layout.html" %}
+    {% block content %}
+    <div class="details-container">
+        <h1>Detalles del Legajo</h1>
+        <div class="detail-field">
+            <strong>ID:</strong> {{ legajo.id }}
+        </div>
+        <div class="detail-field">
+            <strong>Deuda:</strong> {{ legajo.deuda }}
+        </div>
+        <div class="detail-field">
+            <strong>Certificado de Discapacidad:</strong> {{ legajo.certificado_discapacidad }}
+        </div>
+        <div class="detail-field">
+            <strong>Diagnóstico:</strong> {{ legajo.diagnostico }}
+        </div>
+        <div class="detail-field">
+            <strong>Tipo de Discapacidad:</strong> {{ legajo.tipo_discapacidad }}
+        </div>
+        <div class="detail-field">
+            <strong>Asignación Familiar:</strong> {{ legajo.asignacion_familiar }}
+        </div>
+        <div class="detail-field">
+            <strong>Tipo de Asignación Familiar:</strong> {{ legajo.tipo_asignacion_familiar }}
+        </div>
+        <div class="detail-field">
+            <strong>Beneficiario de Pensión:</strong> {{ legajo.es_veneficiaro_pension }}
+        </div>
+        <div class="detail-field">
+            <strong>Pensión:</strong> {{ legajo.pension }}
+        </div>
+        <div class="detail-field">
+            <strong>Obra Social:</strong> {{ legajo.obra_social }}
+        </div>
+        <div class="detail-field">
+            <strong>Número de Afiliado:</strong> {{ legajo.num_afiliado }}
+        </div>
+        <div class="detail-field">
+            <strong>Curatela:</strong> {{ legajo.posee_curatela }}
+        </div>
+        <div class="detail-field">
+            <strong>Observaciones Curatela:</strong> {{ legajo.observaciones_curatela }}
+        </div>
+        <div class="detail-field">
+            <strong>Nombre de Escuela:</strong> {{ legajo.nombre_escuela }}
+        </div>
+        <div class="detail-field">
+            <strong>Dirección de Escuela:</strong> {{ legajo.direccion_escuela }}
+        </div>
+        <div class="detail-field">
+            <strong>Teléfono de Escuela:</strong> {{ legajo.telefono_escuela }}
+        </div>
+        <div class="detail-field">
+            <strong>Año Actual en Escuela:</strong> {{ legajo.anio_actual_escuela }}
+        </div>
+        <div class="detail-field">
+            <strong>Observaciones Escuela:</strong> {{ legajo.observaciones_escuela }}
+        </div>
+        <div class="detail-field">
+            <strong>Parentesco Tutor 1:</strong> {{ legajo.parentesco_tutor_1 }}
+        </div>
+        <div class="detail-field">
+            <strong>Nombre Tutor 1:</strong> {{ legajo.nombre_tutor_1 }}
+        </div>
+        <div class="detail-field">
+            <strong>Apellido Tutor 1:</strong> {{ legajo.apellido_tutor_1 }}
+        </div>
+        <div class="detail-field">
+            <strong>DNI Tutor 1:</strong> {{ legajo.dni_tutor_1 }}
+        </div>
+        <div class="detail-field">
+            <strong>Domicilio Tutor 1:</strong> {{ legajo.domicilio_tutor_1 }}
+        </div>
+        <div class="detail-field">
+            <strong>Celular Tutor 1:</strong> {{ legajo.celular_tutor_1 }}
+        </div>
+        <div class="detail-field">
+            <strong>Email Tutor 1:</strong> {{ legajo.email_tutor_1 }}
+        </div>
+        <div class="detail-field">
+            <strong>Nivel Escolaridad Tutor 1:</strong> {{ legajo.nivel_escolaridad_tutor_1 }}
+        </div>
+        <div class="detail-field">
+            <strong>Ocupación Tutor 1:</strong> {{ legajo.ocupacion_tutor_1 }}
+        </div>
+        <div class="detail-field">
+            <strong>Parentesco Tutor 2:</strong> {{ legajo.parentesco_tutor_2 }}
+        </div>
+        <div class="detail-field">
+            <strong>Nombre Tutor 2:</strong> {{ legajo.nombre_tutor_2 }}
+        </div>
+        <div class="detail-field">
+            <strong>Apellido Tutor 2:</strong> {{ legajo.apellido_tutor_2 }}
+        </div>
+        <div class="detail-field">
+            <strong>DNI Tutor 2:</strong> {{ legajo.dni_tutor_2 }}
+        </div>
+        <div class="detail-field">
+            <strong>Domicilio Tutor 2:</strong> {{ legajo.domicilio_tutor_2 }}
+        </div>
+        <div class="detail-field">
+            <strong>Celular Tutor 2:</strong> {{ legajo.celular_tutor_2 }}
+        </div>
+        <div class="detail-field">
+            <strong>Email Tutor 2:</strong> {{ legajo.email_tutor_2 }}
+        </div>
+        <div class="detail-field">
+            <strong>Nivel Escolaridad Tutor 2:</strong> {{ legajo.nivel_escolaridad_tutor_2 }}
+        </div>
+        <div class="detail-field">
+            <strong>Ocupación Tutor 2:</strong> {{ legajo.ocupacion_tutor_2 }}
+        </div>
+        <div class="detail-field">
+            <strong>Propuesta de Trabajo:</strong> {{ legajo.propuesta_trabajo }}
+        </div>
+        <div class="detail-field">
+            <strong>Condición:</strong> {{ legajo.condicion }}
+        </div>
+        <div class="detail-field">
+            <strong>Sede:</strong> {{ legajo.sede }}
+        </div>
+        <div class="detail-field">
+            <strong>Día:</strong> {{ legajo.dia }}
+        </div>
+        <div class="detail-field">
+            <strong>Profesor/a Terapeuta:</strong> {{ legajo.profesor.nombre +' '+legajo.profesor.apellido }}
+        </div>
+        <div class="detail-field">
+            <strong>Conductor del Caballo:</strong> {{ legajo.conductor.nombre +' '+ legajo.conductor.apellido }}
+        </div>
+        <div class="detail-field">
+            <strong>Caballo:</strong> {{ legajo.caballo_actual.nombre }}
+        </div>
+        <div class="detail-field">
+            <strong>Auxiliar de Pista:</strong> {{ legajo.auxiliar.nombre +' '+legajo.auxiliar.apellido }}
+        </div>
+    </div>
+    <a href="{{ url_for('jya.detalle_legajo', id=legajo.id) }}"> Volver </a>
+    
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% endblock %}
+</body>
+</html>

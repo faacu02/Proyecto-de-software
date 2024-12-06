@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <div class="container">
+    <h2 class="text-center my-4">Usuarios Pendientes</h2>
+
+    <!-- Hacer la tabla responsiva con "table-responsive" -->
+    <div class="table-responsive">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Email</th>
+            <th>Alias</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for usuario in usuarios_pendientes %}
+            <tr>
+              <td>{{ usuario.email }}</td>
+              <td>{{ usuario.alias }}</td>
+              <td>
+                {% if check_permission(session, 'pen_create') %}
+                <a href="{{ url_for('pendiente.accept_user', email=usuario.email, alias=usuario.alias)}}" class="btn btn-success">Aceptar</a>
+                <form action="{{ url_for('pendiente.rechazar_user', email=usuario.email) }}" method="POST" style="display: inline;">
+                  <button type="submit" class="btn btn-danger">Rechazar</button>
+                </form>
+                {% endif %}
+              </td>
+            </tr>
+          {% else %}
+            <tr>
+              <td colspan="3" class="text-center">No hay usuarios pendientes</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Controles de Paginación -->
+    <nav aria-label="Page navigation example">
+      <ul class="pagination justify-content-center">
+        {% if page > 1 %}
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('pendiente.home_pend', page=page-1, per_page=per_page) }}" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+            </a>
+          </li>
+        {% endif %}
+
+        {% for i in range(1, total_paginas + 1) %}
+          <li class="page-item {% if i == page %}active{% endif %}">
+            <a class="page-link" href="{{ url_for('pendiente.home_pend', page=i, per_page=per_page) }}">{{ i }}</a>
+          </li>
+        {% endfor %}
+
+        {% if page < total_paginas %}
+          <li class="page-item">
+            <a class="page-link" href="{{ url_for('pendiente.home_pend', page=page+1, per_page=per_page) }}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+{% endblock %}
+

@@ -1,0 +1,13 @@
+{% extends "reportes/reportes.html"%}
+
+{%block info%}
+<div class="container-fluid">
+    <div class="row justify-content-center">
+            <img src="{{ url_for('reportes.JA_becados_graph') }}" 
+                 alt="Gráfico de J&A Becados" 
+                 class="img-fluid" 
+                 style="max-width: 90%; height: auto;">
+    </div>
+</div>
+
+{%endblock%}

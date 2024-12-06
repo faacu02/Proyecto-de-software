@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Artículo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+</head>
+<body>
+    {% extends "layout.html" %}
+    {% block content %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Crear Nuevo Artículo</h1>
+
+        <form action="{{ url_for( 'articulo.load')}}" method="post">
+            <!-- Título -->
+            <div class="mb-3">
+                <label for="titulo" class="form-label">Título</label>
+                <input type="text" class="form-control" id="titulo" name="titulo" placeholder="Escribe el título del artículo" required>
+            </div>
+            <div class="mb-3">
+                <label for="titulo" class="form-label">Copete</label>
+                <input type="text" class="form-control" id="copete" name="copete" placeholder="Escribe el copete del artículo" required>
+            </div>
+
+            <!-- Autor -->
+            <div class="mb-3">
+                <label for="autor" class="form-label">Autor</label>
+                <select class="form-select" id="autor_id" name="autor_id" required>
+                    <option value="" selected disabled>Seleccione un autor</option>
+                    {% for usuario in usuarios %}
+                    <option value="{{ usuario.id }}">{{ usuario.alias }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Contenido -->
+            <div class="mb-3">
+                <label for="contenido" class="form-label">Contenido</label>
+                <textarea class="form-control" id="contenido" name="contenido" rows="5" placeholder="Escribe el contenido del artículo" required></textarea>
+            </div>
+
+            {% if check_permission(session, 'art_create') %}
+            <div class="d-flex justify-content-between">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a href="{{ url_for( 'articulo.home_articulos')}}" class="btn btn-secondary">Cancelar</a>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    {% endblock %}
+</body>
+</html>

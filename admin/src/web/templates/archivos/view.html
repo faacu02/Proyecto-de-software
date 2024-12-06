@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Artículo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
+</head>
+<body>
+    {% extends "layout.html" %}
+    {% block content %}
+<div class="container mt-5">
+        <h1 class="mb-4">{{ articulo.titulo }}</h1>
+
+        <!-- Información del artículo -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Copete</h5>
+                <p class="card-text">{{ articulo.copete }}</p>
+
+                <h5 class="card-title">Contenido</h5>
+                <p class="card-text">{{ articulo.contenido }}</p>
+
+                <h5 class="card-title">Autor</h5>
+                <p class="card-text">{{ articulo.creador_pub.alias if articulo.autor_id else "Desconocido" }}</p>
+
+                <h5 class="card-title">Estado</h5>
+                <p class="card-text">
+                    <span class="badge 
+                        {% if articulo.estado == 'Publicado' %}bg-success
+                        {% elif articulo.estado == 'Borrador' %}bg-warning text-dark
+                        {% elif articulo.estado == 'Archivado' %}bg-secondary
+                        {% endif %}">
+                        {{ articulo.estado }}
+                    </span>
+                </p>
+
+                <h5 class="card-title">Fecha de Publicación</h5>
+                <p class="card-text">
+                    {{ articulo.fecha_publicacion.strftime('%d/%m/%Y %H:%M:%S') if articulo.fecha_publicacion else "No publicada" }}
+                </p>
+
+                <!-- Fecha de creación -->
+                <h5 class="card-title">Fecha de Creación</h5>
+                <p class="card-text">
+                    {{ articulo.fecha_creacion.strftime('%d/%m/%Y %H:%M:%S') if articulo.fecha_creacion else "No disponible" }}
+                </p>
+
+                <!-- Fecha de última modificación -->
+                <h5 class="card-title">Fecha de Última Modificación</h5>
+                <p class="card-text">
+                    {{ articulo.fecha_actualizacion.strftime('%d/%m/%Y %H:%M:%S') if articulo.fecha_actualizacion else "No disponible" }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="mt-4 d-flex justify-content-between">
+            <a href="{{ url_for('articulo.edit', art_id=articulo.id) }}" class="btn btn-warning">Editar</a>
+            <form action="{{ url_for('articulo.delete', art_id=articulo.id) }}" method="post" onsubmit="return confirm('¿Estás seguro de eliminar este artículo?');">
+                <button type="submit" class="btn btn-danger">Eliminar</button>
+            </form>
+            {% if check_permission(session, 'art_show') %}
+            <a href="{{ url_for('articulo.home_articulos') }}" class="btn btn-secondary">Volver al Listado</a>
+            {% endif %}
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}
+</body>
+</html>

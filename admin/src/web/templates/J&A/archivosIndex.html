@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Archivos del Legajo</title>
+    <style>
+        .search-container {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .sorting-buttons {
+            margin-top: 10px;
+        }
+
+        .btn-sort {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+
+        .btn-sort:hover {
+            background-color: #0056b3;
+            cursor: pointer;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: inline-block;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+
+        button[type="submit"] {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #218838;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    {% extends "layout.html" %}
+    {% block content %}
+    <div class="container mt-5">
+        <h2 class="text-center">Archivos Relacionados</h2>
+        <form method="POST" action="{{ url_for('jya.buscar_archivo', titulo=titulo, tipo=tipo, id=id) }}" class="search-container">
+            <div>
+                <label for="titulo">Título:</label>
+                <input type="text" name="titulo" id="titulo" placeholder="Buscar por Título..." value="{{ request.args.get('titulo', '') }}">
+            </div>
+            
+            <div>
+                <label for="tipo">Tipo:</label>
+                <select name="tipo" id="tipo">
+                    <option value="" {% if request.args.get('tipo') == '' %}selected{% endif %}>Todos</option>
+                    <option value="entrevista" {% if request.args.get('tipo') == 'entrevista' %}selected{% endif %}>Entrevista</option>
+                    <option value="evaluacion" {% if request.args.get('tipo') == 'evaluacion' %}selected{% endif %}>Evaluación</option>
+                    <option value="planificaciones" {% if request.args.get('tipo') == 'planificaciones' %}selected{% endif %}>Planificaciones</option>
+                    <option value="evolucion" {% if request.args.get('tipo') == 'evolucion' %}selected{% endif %}>Evolución</option>
+                    <option value="cronicas" {% if request.args.get('tipo') == 'cronicas' %}selected{% endif %}>Crónicas</option>
+                    <option value="documental" {% if request.args.get('tipo') == 'documental' %}selected{% endif %}>Documental</option>
+                </select>
+            </div>
+            
+            <button type="submit">Buscar</button>
+        </form>
+        <form method="GET" id="sortForm" action="{{ url_for('jya.ordenar_archivos', order=order, sort=sort, id=id, docs=[docs]) }}">
+            <div class="sorting-buttons">
+                <button type="button" class="btn-sort" onclick="toggleSort('titulo')">Ordenar Título</button>
+                <input type="hidden" name="sort" id="sort" value="{{ request.args.get('sort', '') }}">
+                <input type="hidden" name="order" id="order" value="{{ request.args.get('order', 'asc') }}">
+            </div>
+        
+            <div class="sorting-buttons">
+                <button type="button" class="btn-sort" onclick="toggleSort('fecha_subida')">Ordenar Fecha de Subida</button>
+            </div>
+        </form>
+
+        
+        {% if docs %}
+            <table class="table table-bordered mt-4">
+                <thead>
+                    <tr>
+                        <th>Título</th>
+                        <th>Tipo de Archivo</th>
+                        <th>Fecha de subida</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for archivo in docs %}
+                    <tr>
+                        <td>{{ archivo.titulo }}</td>
+                        <td>{{ archivo.tipo }}</td>
+                        <td>{{ archivo.fecha_subida.strftime('%d/%m/%Y') }}</td>
+                        {% if archivo.es_enlace == False %}
+                        <td>
+                            {% if check_permission(session, 'jya_show')%}
+                            <a href="{{ url_for('jya.download_file', id_file=archivo.id) }}" class="btn btn-primary">
+                                Descargar
+                            </a>
+                            {% if check_permission(session, 'jya_destroy')%}
+                             <form action="{{ url_for('jya.delete_file',id_file=archivo.id ,id=id) }}" method="POST" style="display:inline;">
+                                <button class="btn btn-primary">
+                                Eliminar
+                                </button>
+                            </form>
+                            <form action="{{ url_for('jya.update_file', id_file=archivo.id, id=id) }}" method="GET" style="display:inline;">
+                                <button class="btn btn-secondary">
+                                    Editar
+                                </button>
+                            </form>
+                        {% endif %}
+                            {% endif %}
+                        </td>
+                        {% else %}
+                        <td>
+                            <a href="{{ archivo.path }}" class="btn btn-primary">
+                                Visitar
+                            </a>
+                            {% if check_permission(session, 'jya_destroy')%}
+                                <form action="{{ url_for('jya.delete_enlace',id_file=archivo.id ,id=id) }}" method="POST" style="display:inline;">
+                                    <button class="btn btn-primary">
+                                    Eliminar
+                                    </button>
+                                </form>
+                                <form action="{{ url_for('jya.update_file', id_file=archivo.id, id=id) }}" method="GET" style="display:inline;">
+                                    <button class="btn btn-secondary">
+                                        Editar
+                                    </button>
+                                </form>
+                                {% endif %}
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="alert alert-info text-center mt-4">
+                No hay archivos disponibles para este legajo.
+            </div>
+        {% endif %}
+
+        <div class="text-center mt-4">
+            <a href="{{ url_for('jya.detalle_legajo', id=id) }}" class="btn btn-secondary">Volver al Detalle del Legajo</a>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    function toggleSort(column) {
+        const sortInput = document.getElementById('sort');
+        const orderInput = document.getElementById('order');
+    
+        if (sortInput.value === column) {
+            orderInput.value = orderInput.value === 'asc' ? 'desc' : 'asc';
+        } else {
+            sortInput.value = column;
+            orderInput.value = 'asc';
+        }
+    
+        document.getElementById('sortForm').submit();
+    }
+    </script>
+    {% endblock %}
+</body>
+</html>

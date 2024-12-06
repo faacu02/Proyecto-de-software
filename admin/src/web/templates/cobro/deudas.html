@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block content %}
+{% if JAs %}
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+            <th>JA nro: </th>
+            <th>JA Nombre: </th>
+            <th>JA Apellido: </th>
+            <th>Esta en Deuda</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for JA in JAs %}
+            <tr>
+                <td>{{ JA.id }}</td>
+                <td>{{ JA.nombre  }}</td>
+                <td>{{ JA.apellido  }}</td>
+                <td>
+                    <!-- Formulario para marcar/desmarcar deuda -->
+                    <form id="form-{{ JA.id }}" action="{{ url_for('cobro.marcar_deuda', id=JA.id) }}" method="POST">
+                        <input type="checkbox" name="deuda" value="true" {% if JA.deuda %}checked{% endif %}>
+                    </form>    
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script>
+    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            if (confirm("¿Está seguro que desea cambiar el estado de la deuda?")) {
+                this.closest('form').submit();
+            } else {
+                // Si el usuario cancela, revertimos el estado del checkbox
+                this.checked = !this.checked;
+            }
+        });
+    });
+</script>
+{% else %}
+<p class="no-miembros">No hay JAs registrados</p>
+{% endif %}
+
+{% endblock %}

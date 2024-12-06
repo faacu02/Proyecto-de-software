@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alta Miembro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Bootstrap CSS -->
+</head>
+<body>
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h1 class="mb-4">Alta de Miembro</h1>
+        <form action="{{ url_for('equipo.altaMiembro') }}" method="post" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" class="form-control" id="nombre" name="nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="apellido">Apellido:</label>
+                <input type="text" class="form-control" id="apellido" name="apellido" required>
+            </div>
+            <div class="form-group">
+                <label for="dni">DNI:</label>
+                <input type="text" class="form-control" id="dni" name="dni" required pattern="\d+">
+            </div>
+            <div class="form-group">
+                <label for="domicilio">Domicilio:</label>
+                <input type="text" class="form-control" id="domicilio" name="domicilio" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="localidad">Localidad:</label>
+                <input type="text" class="form-control" id="localidad" name="localidad" required>
+            </div>
+            <div class="form-group">
+                <label for="telefono">Teléfono:</label>
+                <input type="tel" class="form-control" id="telefono" name="telefono" required pattern="\d+">
+            </div>
+            <div class="form-group">
+                <label for="profesion">Profesión:</label>
+                <select class="form-control" id="profesion" name="profesion" required>
+                  <option value="" disabled selected>Seleccione una profesión</option>
+                  <option value="Psicólogo/a">Psicólogo/a</option>
+                  <option value="Psicomotricista">Psicomotricista</option>
+                  <option value="Médico/a">Médico/a</option>
+                  <option value="Kinesiólogo/a">Kinesiólogo/a</option>
+                  <option value="Terapista Ocupacional">Terapista Ocupacional</option>
+                  <option value="Psicopedagogo/a">Psicopedagogo/a</option>
+                  <option value="Docente">Docente</option>
+                  <option value="Profesor">Profesor</option>
+                  <option value="Fonoaudiólogo/a">Fonoaudiólogo/a</option>
+                  <option value="Veterinario/a">Veterinario/a</option>
+                  <option value="Otro">Otro</option>
+              </select>
+            </div>
+            <div class="form-group">
+                <label for="puesto">Puesto laboral en la Institución:</label>
+                <select class="form-control" id="puesto" name="puesto_laboral" required>
+                  <option value="" disabled selected>Seleccione un puesto</option>
+                  <option value="Administrativo/a">Administrativo/a</option>
+                  <option value="Terapeuta">Terapeuta</option>
+                  <option value="Conductor">Conductor</option>
+                  <option value="Auxiliar de pista">Auxiliar de pista</option>
+                  <option value="Herrero">Herrero</option>
+                  <option value="Veterinario">Veterinario</option>
+                  <option value="Entrenador de Caballos">Entrenador de Caballos</option>
+                  <option value="Domador">Domador</option>
+                  <option value="Profesor de Equitación">Profesor de Equitación</option>
+                  <option value="Docente de Capacitación">Docente de Capacitación</option>
+                  <option value="Auxiliar de mantenimiento">Auxiliar de mantenimiento</option>
+                  <option value="Otro">Otro</option>
+              </select>
+            </div>
+            <div class="form-group">
+                <label for="fecha_inicio">Fecha de inicio:</label>
+                <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" required>
+            </div>
+            <div class="form-group">
+                <label for="fecha_cese">Fecha de Cese:</label>
+                <input type="date" class="form-control" id="fecha_cese" name="fecha_cese">
+            </div>
+            <div class="form-group">
+                <label for="contacto_emergencia_nombre">Contacto de Emergencia (Indicar Nombre):</label>
+                <input type="text" class="form-control" id="contacto_emergencia_nombre" name="contacto_emergencia_nombre" required>
+            </div>
+            <div class="form-group">
+                <label for="contacto_emergencia_telefono">Contacto de Emergencia (Indicar Teléfono):</label>
+                <input type="tel" class="form-control" id="contacto_emergencia_telefono" name="contacto_emergencia_telefono" required pattern="\d+">
+            </div>
+            <div class="form-group">
+                <label for="obra_social">Obra Social:</label>
+                <input type="text" class="form-control" id="obra_social" name="obra_social" required>
+            </div>
+            <div class="form-group">
+                <label for="n_afiliado">N° de Afiliado:</label>
+                <input type="text" class="form-control" id="n_afiliado" name="num_afiliado" required pattern="\d+">
+            </div>
+            <div class="form-group">
+                <label for="condicion">Condición:</label>
+                <select class="form-control" id="condicion" name="condicion" required>
+                    <option value="voluntario">Voluntario</option>
+                    <option value="personal_rentado">Personal Rentado</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="activo">Activo:</label>
+                <select class="form-control" id="activo" name="activo" required>
+                    <option value="si">Sí</option>
+                    <option value="no">No</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="titulo">Título:</label>
+                <input type="file" id="titulo" name="titulo" onchange="mostrarBotonEliminar('titulo')">
+                <button type="button" id="eliminar_titulo" onclick="eliminarArchivo('titulo')" style="display: none;">Eliminar archivo</button>
+                <p id="nombre_archivo_seleccionado_titulo"></p> <!-- Para mostrar el nombre del nuevo archivo seleccionado -->
+            </div>
+            <div class="form-group">
+                <label for="copia_dni">Copia DNI:</label>
+                <input type="file" id="copia_dni" name="copia_dni" onchange="mostrarBotonEliminar('copia_dni')">
+                <button type="button" id="eliminar_copia_dni" onclick="eliminarArchivo('copia_dni')" style="display: none;">Eliminar archivo</button>
+                <p id="nombre_archivo_seleccionado_copia_dni"></p> <!-- Para mostrar el nombre del nuevo archivo seleccionado -->
+            </div>
+            <div class="form-group">
+                <label for="cv_actualizado">CV Actualizado:</label>
+                <input type="file" id="cv_actualizado" name="cv_actualizado" onchange="mostrarBotonEliminar('cv_actualizado')">
+                <button type="button" id="eliminar_cv_actualizado" onclick="eliminarArchivo('cv_actualizado')" style="display: none;">Eliminar archivo</button>
+                <p id="nombre_archivo_seleccionado_cv_actualizado"></p> <!-- Para mostrar el nombre del nuevo archivo seleccionado -->
+            </div>
+            <button type="submit" class="btn btn-primary">Enviar</button>
+        </form>
+    </div>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script>
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    
+    
+
+        function mostrarBotonEliminar(elemento) {
+            var input = document.getElementById(elemento);
+            var botonEliminar = document.getElementById('eliminar_' + elemento);
+            if (input.files.length > 0) {
+                botonEliminar.style.display = 'inline'; // Muestra el botón de eliminar
+                document.getElementById('nombre_archivo_seleccionado_' + elemento).textContent = 'Archivo seleccionado: ' + input.files[0].name;
+             
+               }   else {
+                botonEliminar.style.display = 'none'; // Oculta el botón de eliminar
+                document.getElementById('nombre_archivo_seleccionado_' + elemento).textContent = '';
+            }
+        }
+        
+
+        function eliminarArchivo(elemento) {
+            var input = document.getElementById(elemento);
+            input.value = ""; // Limpia el campo de archivo
+            document.getElementById('eliminar_' + elemento).style.display = 'none'; // Oculta el botón de eliminar
+            document.getElementById('nombre_archivo_seleccionado_' + elemento).textContent = ''; // Limpia el nombre mostrado
+        }
+    </script>
+</body>
+{% endblock %}
+</html>

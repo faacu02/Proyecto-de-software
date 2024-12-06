@@ -1,0 +1,138 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<nav>
+    {% if check_permission(session, 'cobro_create') %}
+        <a href="{{url_for('cobro.registrar_cobro_page')}}">Registrar Nuevo Cobro</a>
+    {% endif %}
+    {% if check_permission(session, 'cobro_show') %}
+        <a href="{{url_for('cobro.deudas_page')}}">Ver Deudas de J&As</a>
+    {% endif %}
+</nav>
+<div class="search-form mb-4">
+    <form method="GET" action="{{ url_for('cobro.filtrar_cobros') }}" class="form-inline">
+        <!-- Campos de búsqueda -->
+        <label for="nombre" class="mr-2">Ingrese el nombre del receptor del dinero para buscar:</label>
+        <input type="text" name="nombre" id="nombre" class="form-control mr-2" placeholder="Ingrese nombre para buscar" value="{{ request.args.get('nombre', '') }}">
+
+        <label for="apellido" class="mr-2">Ingrese el apellido del receptor del dinero para buscar:</label>
+        <input type="text" name="apellido" id="apellido" class="form-control mr-2" placeholder="Ingrese apellido para buscar" value="{{ request.args.get('apellido', '') }}">
+
+        <div id="medio_pago_select" class="form-group mr-2">
+            <label for="medio_pago" class="mr-2">Seleccione Medio de Pago:</label>
+            <select name="medio_pago" class="form-control">
+                <option value="">Seleccione un medio de pago</option>
+                <option value="efectivo" {% if request.args.get('medio_pago', '') == "efectivo" %}selected{% endif %}>Efectivo</option>
+                <option value="tarjeta_credito" {% if request.args.get('medio_pago', '') == "tarjeta_credito" %}selected{% endif %}>Tarjeta de Crédito</option>
+                <option value="tarjeta_debito" {% if request.args.get('medio_pago', '') == "tarjeta_debito" %}selected{% endif %}>Tarjeta de Débito</option>
+                <option value="transferencia" {% if request.args.get('medio_pago', '') == "transferencia" %}selected{% endif %}>Transferencia Bancaria</option>
+                <option value="otro" {% if request.args.get('medio_pago', '') == "otro" %}selected{% endif %}>Otro</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="fecha_inicio">Fecha de Pago - Inicio</label>
+            <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio"
+            value="{{ request.args.get('fecha_inicio', '') }}">
+        </div>
+    
+        <div class="form-group">
+            <label for="fecha_fin">Fecha de Pago - Fin</label>
+            <input type="date" class="form-control" id="fecha_fin" name="fecha_fin"
+            value="{{ request.args.get('fecha_fin', '') }}">
+        </div>
+        <!-- Nuevos campos para el orden -->
+        <label for="orden" class="mr-2">Ordenar por:</label>
+        <select name="Orden" id="orden" class="form-control mr-2">
+            <option value="fecha_pago" selected>Fecha de Pago</option>
+        </select>
+
+        <label for="direccion" class="mr-2">Dirección:</label>
+        <select name="direccion" id="direccion" class="form-control mr-2">
+            <option value="Ascendente">Ascendente</option>
+            <option value="Descendente" {% if request.args.get('direccion', '') == "Descendente" %}selected{% endif %}>Descendente</option>
+        </select>
+
+        <button type="submit" class="btn btn-primary">Buscar</button>
+    </form>
+</div>
+{% if cobros %}
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+            <th>Fecha de Pago: </th>
+            <th>Medio de Pago:</th>
+            <th>Monto: </th>
+            <th>Nombre del J&A</th>
+            <th>Nombre del J&A</th>
+            <th>Nombre del Receptor</th>
+            <th>Apellido del Receptor</th>
+            <th>Observaciones</th>
+            <th>Botones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cobro in cobros %}
+            <tr>
+                <td>{{ cobro.fecha_pago }}</td>
+                <td>{{ cobro.medio_pago }}</td>
+                <td>{{ cobro.monto }}</td>
+                <td>{{cobro.JyA.nombre}}</td>
+                <td>{{cobro.JyA.apellido}}</td>
+                <td>{{ cobro.receptor_dinero.nombre }}</td>
+                <td>{{ cobro.receptor_dinero.apellido }}</td>
+                <td>{{ cobro.observaciones }}</td>
+                <td>
+                    {% if check_permission(session, 'cobro_update') %}
+                    <a href="{{ url_for('cobro.editar_cobro', id=cobro.id) }}"
+                                 class="btn btn-primary btn-sm">Editar</a>
+                    {% endif %}
+                    {% if check_permission(session, 'cobro_destroy') %}
+                    <form action="{{ url_for('cobro.borrar_cobro', id=cobro.id) }}" method="POST" style="display:inline;" 
+                                onsubmit="return confirmDelete()">
+                        <button type="submit" class="btn btn-danger btn-sm">Borrar</button>
+                    </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="d-flex justify-content-start mt-4">
+        {% if cobros.has_prev %}
+        <a href="{{ url_for('cobro.filtrar_cobros', page=cobros.prev_num, 
+                        direccion=request.args.get('direccion', 'Ascendente'), 
+                        Orden=request.args.get('Orden', 'fecha_pago'), 
+                        medio_pago=request.args.get('medio_pago', ''), 
+                        nombre=request.args.get('nombre', ''), 
+                        apellido=request.args.get('apellido', ''), 
+                        fecha_inicio=request.args.get('fecha_inicio', ''), 
+                        fecha_fin=request.args.get('fecha_fin', '')) }}" 
+       class="btn btn-secondary">    &laquo; Anterior
+        </a>
+        {% endif %}
+
+        {% if cobros.has_next %}
+        <a href="{{ url_for('cobro.filtrar_cobros', page=cobros.next_num, 
+                        direccion=request.args.get('direccion', 'Ascendente'), 
+                        Orden=request.args.get('Orden', 'fecha_pago'), 
+                        medio_pago=request.args.get('medio_pago', ''), 
+                        nombre=request.args.get('nombre', ''), 
+                        apellido=request.args.get('apellido', ''), 
+                        fecha_inicio=request.args.get('fecha_inicio', ''), 
+                        fecha_fin=request.args.get('fecha_fin', '')) }}" 
+       class="btn btn-secondary">
+        Siguiente &raquo;
+        </a>
+        {% endif %}
+    </div>
+</div>
+<script>
+    function confirmDelete() {
+    return confirm(`¿Está seguro que desea borrar al Cobro?`);
+}
+</script>
+{% else %}
+<p class="no-miembros">No hay cobros registrados</p>
+{% endif %}
+{% endblock %}
